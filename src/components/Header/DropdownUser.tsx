@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, NavigateOptions } from 'react-router-dom';
 
 import UserOne from '../../images/user/user-01.png';
 
@@ -8,7 +8,7 @@ const DropdownUser = () => {
 
   const trigger = useRef<any>(null);
   const dropdown = useRef<any>(null);
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
   // close on click outside
   useEffect(() => {
@@ -35,9 +35,10 @@ const navigate = useNavigate();
     document.addEventListener('keydown', keyHandler);
     return () => document.removeEventListener('keydown', keyHandler);
   });
-const logoutHandler = ()=>{
-  navigate()
-}
+  const logoutHandler = () => {
+    const options: NavigateOptions = { replace: true };
+    navigate('/', { replace: true });
+  };
   return (
     <div className="relative">
       <Link
@@ -48,9 +49,9 @@ const logoutHandler = ()=>{
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
-            Thomas Anree
+            Admin
           </span>
-          <span className="block text-xs">UX Designer</span>
+          <span className="block text-xs">Administrator</span>
         </span>
 
         <span className="h-12 w-12 rounded-full">
@@ -132,7 +133,7 @@ const logoutHandler = ()=>{
           </li>
           <li>
             <Link
-              to="/pages/settings"
+              to="/settings"
               className="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
             >
               <svg
@@ -156,7 +157,10 @@ const logoutHandler = ()=>{
             </Link>
           </li>
         </ul>
-        <button onClick={logoutHandler} className="flex items-center gap-3.5 px-6 py-4 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base">
+        <button
+          onClick={logoutHandler}
+          className="flex items-center gap-3.5 px-6 py-4 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
+        >
           <svg
             className="fill-current"
             width="22"
