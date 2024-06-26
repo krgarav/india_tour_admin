@@ -16,6 +16,7 @@ import Tables from './pages/Tables';
 import Alerts from './pages/UiElements/Alerts';
 import Buttons from './pages/UiElements/Buttons';
 import Login from './pages/Authentication/Login';
+import CreateTour from './pages/CreateTour';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -43,7 +44,6 @@ function App() {
             </>
           }
         />
-
         <Route
           path="/dashboard"
           element={
@@ -149,6 +149,15 @@ function App() {
             <>
               <PageTitle title="Signup | TailAdmin - Tailwind CSS Admin Dashboard Template" />
               <SignUp />
+            </>
+          }
+        />
+        <Route
+          path="/create-tour"
+          element={
+            <>
+              <PageTitle title="Create Tour | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+              <CreateTour />
             </>
           }
         />
