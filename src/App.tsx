@@ -15,6 +15,7 @@ import Settings from './pages/Settings';
 import Tables from './pages/Tables';
 import Alerts from './pages/UiElements/Alerts';
 import Buttons from './pages/UiElements/Buttons';
+import Login from './pages/Authentication/Login';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -35,6 +36,16 @@ function App() {
       <Routes>
         <Route
           index
+          element={
+            <>
+              <PageTitle title="Triangle India | Signin" />
+              <Login />
+            </>
+          }
+        />
+
+        <Route
+          path="/dashboard"
           element={
             <>
               <PageTitle title="eCommerce Dashboard | TailAdmin - Tailwind CSS Admin Dashboard Template" />
