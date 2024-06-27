@@ -16,11 +16,18 @@ import MultiSelect from '../components/Forms/MultiSelect';
 import SelectState from '../components/Forms/SelectGroup/SelectState';
 
 const CreateTour = () => {
+  function validateFiles(event: any) {
+    const input = event.target;
+    if (input.files.length < 5) {
+      alert('Please select at least 5 images.');
+      input.value = ''; // Clear the input
+    }
+  }
   return (
     <DefaultLayout>
       <Breadcrumb pageName="Create Tour" />
 
-      <div className="grid grid-cols-1 gap-9 sm:grid-cols-2">
+      <div className="">
         <div className="flex flex-col gap-9">
           {/* <!-- Create Input Fields --> */}
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -30,28 +37,29 @@ const CreateTour = () => {
               </h3>
             </div>
             <div className="flex flex-col gap-5.5 p-6.5">
-              <div>
-                <label className="mb-3 block text-black dark:text-white">
-                  Tour Title Name
-                </label>
-                <input
-                  type="text"
-                  placeholder="Enter Title Name"
-                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                />
+              <div className="grid sm:grid-cols-2 md:flex md:flex-row">
+                <div className="w-full md:w-1/2 md:pr-2">
+                  <label className="mb-3 block text-black dark:text-white">
+                    Tour Title Name
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter Title Name"
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                  />
+                </div>
+                <div className="w-full md:w-1/2 md:pl-2">
+                  <label className="mb-3 block text-black dark:text-white">
+                    Tour Price
+                  </label>
+                  <input
+                    type="number"
+                    placeholder="Enter Tour Price"
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                  />
+                </div>
               </div>
-              <div>
-                <label className="mb-3 block text-black dark:text-white">
-                  Tour Price
-                </label>
-                <input
-                  type="text"
-                  placeholder="Enter Tour Price"
-                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                />
-              </div>
-
-              <div>
+              {/* <div>
                 <label className="mb-3 block text-black dark:text-white">
                   Tour Duration
                 </label>
@@ -60,14 +68,51 @@ const CreateTour = () => {
                   placeholder="Enter Tour Duration"
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
+              </div> */}
+              <div className="grid sm:grid-cols-2 md:flex md:flex-row">
+                <div className="w-full md:w-1/2 md:pr-2">
+                  <label className="mb-3 block text-black dark:text-white">
+                    Tour Duration (Day)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter Duration in Days"
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                  />
+                </div>
+
+                <div className="w-full md:w-1/2 md:pl-2">
+                  <label className="mb-3 block text-black dark:text-white">
+                    Tour Duration (Night)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter Duration in Nights"
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                  />
+                </div>
               </div>
               <div>
                 <label className="mb-3 block text-black dark:text-white">
                   Tour Title Description
                 </label>
                 <textarea
+                  rows={2}
+                  placeholder="Enter up to 20 words"
+                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                  maxLength="200"
+                ></textarea>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Limit: 20 words
+                </p>
+              </div>
+              <div>
+                <label className="mb-3 block text-black dark:text-white">
+                  Tour Main Description
+                </label>
+                <textarea
                   rows={3}
-                  placeholder="Default textarea"
+                  placeholder="Enter main description "
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 ></textarea>
               </div>
@@ -80,7 +125,112 @@ const CreateTour = () => {
                   className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
                 />
               </div>
-              <SelectState />
+              <div>
+                <label className="mb-3 block text-black dark:text-white">
+                  Attach Sub Images
+                </label>
+                <input
+                  type="file"
+                  multiple
+                  className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
+                  onChange={validateFiles}
+                />
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Please attach at least 5 images.
+                </p>
+              </div>
+              <div className="grid sm:grid-cols-2 md:flex md:flex-row">
+                <div className="w-full md:w-1/2 md:pr-2">
+                  <SelectState />
+                </div>
+                <div className="w-full md:w-1/2 md:pr-2">
+                  <label className="mb-3 block text-black dark:text-white">
+                    Tour in Top Deal
+                  </label>
+                  <select className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary">
+                    <option value="1">Yes</option>
+                    <option value="1">No</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid sm:grid-cols-2 md:flex md:flex-row">
+                <div className="w-full md:w-1/2 md:pr-2">
+                  <label className="mb-3 block text-black dark:text-white">
+                    Rating
+                  </label>
+                  <input
+                    type="number"
+                    placeholder="Enter Rating in number"
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                  />
+                </div>
+
+                <div className="w-full md:w-1/2 md:pl-2">
+                  <label className="mb-3 block text-black dark:text-white">
+                    Stars
+                  </label>
+                  <input
+                    type="number"
+                    placeholder="Enter stars from 1 to 5"
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                  />
+                </div>
+              </div>
+              <div className="grid sm:grid-cols-3 md:flex md:flex-row">
+                <div className="w-full md:w-1/3 md:pr-2">
+                  <label className="mb-3 block text-black dark:text-white">
+                    Luxury Hotel
+                  </label>
+                  <select className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary">
+                    <option value="1">1</option>
+                    <option value="1">1</option>
+                  </select>
+                </div>
+
+                <div className="w-full md:w-1/3 md:pl-2">
+                  <label className="mb-3 block text-black dark:text-white">
+                    Free Wifi
+                  </label>
+                  <select className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary">
+                    <option value="1">1</option>
+                    <option value="1">1</option>
+                  </select>
+                </div>
+                <div className="w-full md:w-1/3 md:pl-2">
+                  <label className="mb-3 block text-black dark:text-white">
+                    Transport Facility
+                  </label>
+
+                  <select className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary">
+                    <option value="1">1</option>
+                    <option value="1">1</option>
+                  </select>
+                </div>
+              </div>
+              <div className="grid sm:grid-cols-2 md:flex md:flex-row">
+                <div className="w-full md:w-1/2 md:pr-2">
+                  <label className="mb-3 block text-black dark:text-white">
+                    Fooding (Lunch / Dinner)
+                  </label>
+                  <select className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary">
+                    <option value="1">1</option>
+                    <option value="1">1</option>
+                  </select>
+                </div>
+
+                <div className="w-full md:w-1/2 md:pl-2">
+                  <label className="mb-3 block text-black dark:text-white">
+                    Others
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter in two to four words."
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                  />
+                </div>
+              </div>
+              {/* rating , star, top deals. */}
               {/* <div>
                 <label className="mb-3 block text-black dark:text-white">
                   Active Input
