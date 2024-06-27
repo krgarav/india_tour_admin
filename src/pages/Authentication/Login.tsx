@@ -1,41 +1,46 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import LogoDark from '../../images/logo/logo-dark.svg';
 import axios from 'axios';
+import Spinner from '../../common/spinner/spinner';
 
 const Login: React.FC = () => {
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
-
+  const address = import.meta.env.VITE_API_ADDRESS;
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-
   const submitHandler = async (event: any) => {
     event.preventDefault();
 
+    setIsLoading(true);
     if (emailRef.current && passwordRef.current) {
       if (emailRef.current.value && passwordRef.current.value) {
         const enteredEmail = emailRef.current.value;
         const enteredPassword = passwordRef.current.value;
-
         try {
-          const response = await axios.post('http://localhost:5000/login', {
+          const response = await axios.post(`${address}/login`, {
             email: enteredEmail,
             password: enteredPassword,
           });
-          navigate('/dashboard');
+          setIsLoading(false);
           console.log(response.data);
+          navigate('/dashboard');
         } catch (error: any) {
-          if (error.response.data.error) {
-            alert(error.response.data.error);
+          if (error.resaponse) {
+            if (error.response.data.error) {
+              alert(error.response.data.error);
+            }
           }
-          console.error('Error during login:', error.response.data.error);
+          setIsLoading(false);
+          alert(error.message);
+          console.error('Error during login:', error);
         }
       } else {
         alert('Email or password cannot empty');
+        setIsLoading(false);
       }
     }
-
-    
   };
   return (
     <div className="rounded-sm border dark:border-strokedark dark:bg-boxdark  h-[100vh] flex flex-col items-center">
@@ -44,12 +49,11 @@ const Login: React.FC = () => {
           <div className="py-17.5 px-26 text-center">
             <Link className="mb-5.5 inline-block" to="/">
               {/* <img className="hidden dark:block" src={Logo} alt="Logo" /> */}
-              <img src={LogoDark} alt="Logo" />
+              <img src="/images/logo.png" alt="Logo" />
             </Link>
 
             <p className="2xl:px-20">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit
-              suspendisse.
+              Manage your Tours and package very easily and make site faster.
             </p>
 
             <span className="mt-15 inline-block">
@@ -179,9 +183,14 @@ const Login: React.FC = () => {
 
         <div className="w-full border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2">
           <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
-            <span className="mb-1.5 block font-medium">Start for free</span>
+            <Link className="mb-5.5 inline-block sm:hidden" to="/">
+              <img src="/images/logo.png" alt="Logo" />
+            </Link>
+            <span className="mb-1.5 block font-medium">
+              Manage Your Site with Admin Pannel
+            </span>
             <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
-              Sign In to TailAdmin
+              Sign In to Triangle India Tour
             </h2>
 
             <form onSubmit={submitHandler}>
@@ -219,7 +228,7 @@ const Login: React.FC = () => {
 
               <div className="mb-6">
                 <label className="mb-2.5 block font-medium text-black dark:text-white">
-                  Re-type Password
+                  Password
                 </label>
                 <div className="relative">
                   <input
@@ -254,11 +263,14 @@ const Login: React.FC = () => {
               </div>
 
               <div className="mb-5">
-                <input
+                <button className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90">
+                  {!isLoading ? ' Sign In' : <Spinner />}
+                </button>
+                {/* <input
                   type="submit"
                   value="Sign In"
                   className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
-                />
+                /> */}
               </div>
 
               <button className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray p-4 hover:bg-opacity-50 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-50">
