@@ -1,13 +1,41 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import LogoDark from '../../images/logo/logo-dark.svg';
-import Logo from '../../images/logo/logo.svg';
+import axios from 'axios';
 
 const Login: React.FC = () => {
+  const emailRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
+
   const navigate = useNavigate();
-  const submitHandler = (event) => {
+
+  const submitHandler = async (event: any) => {
     event.preventDefault();
-    navigate('/dashboard');
+
+    if (emailRef.current && passwordRef.current) {
+      if (emailRef.current.value && passwordRef.current.value) {
+        const enteredEmail = emailRef.current.value;
+        const enteredPassword = passwordRef.current.value;
+
+        try {
+          const response = await axios.post('http://localhost:5000/login', {
+            email: enteredEmail,
+            password: enteredPassword,
+          });
+          navigate('/dashboard');
+          console.log(response.data);
+        } catch (error: any) {
+          if (error.response.data.error) {
+            alert(error.response.data.error);
+          }
+          console.error('Error during login:', error.response.data.error);
+        }
+      } else {
+        alert('Email or password cannot empty');
+      }
+    }
+
+    
   };
   return (
     <div className="rounded-sm border dark:border-strokedark dark:bg-boxdark  h-[100vh] flex flex-col items-center">
@@ -166,6 +194,7 @@ const Login: React.FC = () => {
                     type="email"
                     placeholder="Enter your email"
                     className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    ref={emailRef}
                   />
 
                   <span className="absolute right-4 top-4">
@@ -197,6 +226,7 @@ const Login: React.FC = () => {
                     type="password"
                     placeholder="6+ Characters, 1 Capital letter"
                     className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    ref={passwordRef}
                   />
 
                   <span className="absolute right-4 top-4">
