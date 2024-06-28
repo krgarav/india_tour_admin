@@ -14,19 +14,97 @@ import DatePickerTwo from '../components/Forms/DatePicker/DatePickerTwo';
 import SelectGroupTwo from '../components/Forms/SelectGroup/SelectGroupTwo';
 import MultiSelect from '../components/Forms/MultiSelect';
 import SelectState from '../components/Forms/SelectGroup/SelectState';
+import { useRef, useState } from 'react';
+import axios from 'axios';
 
 const CreateTour = () => {
-  function validateFiles(event: any) {
-    const input = event.target;
-    if (input.files.length < 5) {
-      alert('Please select at least 5 images.');
-      input.value = ''; // Clear the input
+  const [tourTitle, setTourTitle] = useState('');
+
+  const [tourPrice, setTourPrice] = useState('');
+  const [tourDayDuration, setTourDayDuration] = useState('');
+  const [tourNightDuration, setTourNightDuration] = useState('');
+
+  const [tourTitleDesc, setTourTitleDesc] = useState('');
+  const [tourMainDesc, setTourMainDesc] = useState('');
+  const [titleImage, setTitleImage] = useState<File | null>(null);
+  const [subImage, setSubImage] = useState<File[]>([]);
+  const [topDeal, setTopDeal] = useState<boolean>(false);
+  const [rating, setRating] = useState<string>('');
+  const [stars, setStars] = useState<number | undefined>(undefined);
+  const [luxuryHotel, setluxuryHotel] = useState<boolean>(false);
+  const [freeWifi, setFreeWifi] = useState<boolean>(false);
+  const [transport, setTransport] = useState<boolean>(false);
+  const [fooding, setFooding] = useState<boolean>(false);
+  const [otherServices, setOtherServices] = useState<string>('');
+  const [tourLocation, setTourLocation] = useState<string>('');
+  const address = import.meta.env.VITE_API_ADDRESS;
+  // const [tourTitle, setTourTitle] = useState('');
+  // const [tourTitle, setTourTitle] = useState('');
+
+  // function validateFiles(event: any) {
+  //   const input = event.target;
+  //   if (input.files.length < 5) {
+  //     alert('Please select at least 5 images.');
+  //     input.value = ''; // Clear the input
+  //   }
+  // }
+
+  const createTourHandler = async () => {
+    console.log('jkhk');
+    try {
+      // Create an object with textual/JSON data
+      const obj = {
+        title: tourTitle,
+        miniDesc: tourTitleDesc,
+        price: tourPrice,
+        durationDay: tourDayDuration,
+        durationNight: tourNightDuration,
+        location: tourLocation,
+        deals: topDeal,
+        rating: rating,
+        stars: stars,
+        longDesc: tourMainDesc,
+        luxuryHotel: luxuryHotel,
+        wifi: freeWifi,
+        transport: transport,
+        fooding: fooding,
+        others: otherServices,
+      };
+      console.log(obj);
+
+      // Create a new FormData instance for file uploads
+      const formData = new FormData();
+
+      // Append textual/JSON data to FormData
+      formData.append('data', JSON.stringify(obj));
+
+      // Append single image file (titleImage)
+      if (titleImage) {
+        formData.append('TitleImage', titleImage);
+      }
+
+      // Append multiple image files (subImage)
+      subImage.forEach((image, index) => {
+        formData.append(`subImage_${index}`, image);
+      });
+
+      // Make a POST request to your backend endpoint
+      const response = await axios.post(`${address}/createtour`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      console.log(response);
+      console.log('Tour creation successful:', response.data);
+      // Handle any success logic here
+    } catch (error) {
+      console.error('Error creating tour:', error);
+      // Handle errors appropriately
     }
-  }
+  };
   return (
     <DefaultLayout>
       <Breadcrumb pageName="Create Tour" />
-
       <div className="">
         <div className="flex flex-col gap-9">
           {/* <!-- Create Input Fields --> */}
@@ -46,6 +124,8 @@ const CreateTour = () => {
                     type="text"
                     placeholder="Enter Title Name"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    value={tourTitle}
+                    onChange={(e) => setTourTitle(e.target.value)}
                   />
                 </div>
                 <div className="w-full md:w-1/2 md:pl-2">
@@ -56,19 +136,12 @@ const CreateTour = () => {
                     type="number"
                     placeholder="Enter Tour Price"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    value={tourPrice}
+                    onChange={(e) => setTourPrice(e.target.value)}
                   />
                 </div>
               </div>
-              {/* <div>
-                <label className="mb-3 block text-black dark:text-white">
-                  Tour Duration
-                </label>
-                <input
-                  type="text"
-                  placeholder="Enter Tour Duration"
-                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                />
-              </div> */}
+
               <div className="grid sm:grid-cols-2 md:flex md:flex-row">
                 <div className="w-full md:w-1/2 md:pr-2">
                   <label className="mb-3 block text-black dark:text-white">
@@ -78,6 +151,8 @@ const CreateTour = () => {
                     type="text"
                     placeholder="Enter Duration in Days"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    value={tourDayDuration}
+                    onChange={(e) => setTourDayDuration(e.target.value)}
                   />
                 </div>
 
@@ -89,6 +164,8 @@ const CreateTour = () => {
                     type="text"
                     placeholder="Enter Duration in Nights"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    value={tourNightDuration}
+                    onChange={(e) => setTourNightDuration(e.target.value)}
                   />
                 </div>
               </div>
@@ -101,6 +178,8 @@ const CreateTour = () => {
                   placeholder="Enter up to 20 words"
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                   maxLength="200"
+                  value={tourTitleDesc}
+                  onChange={(e) => setTourTitleDesc(e.target.value)}
                 ></textarea>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
                   Limit: 20 words
@@ -114,6 +193,8 @@ const CreateTour = () => {
                   rows={3}
                   placeholder="Enter main description "
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                  value={tourMainDesc}
+                  onChange={(e) => setTourMainDesc(e.target.value)}
                 ></textarea>
               </div>
               <div>
@@ -123,6 +204,11 @@ const CreateTour = () => {
                 <input
                   type="file"
                   className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    if (e.target.files && e.target.files.length > 0) {
+                      setTitleImage(e.target.files[0]); // Store the file object in state
+                    }
+                  }}
                 />
               </div>
               <div>
@@ -133,7 +219,20 @@ const CreateTour = () => {
                   type="file"
                   multiple
                   className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
-                  onChange={validateFiles}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    const input = e.target;
+                    if (input.files) {
+                      const filesArray = Array.from(input.files); // Convert FileList to Array
+
+                      if (filesArray.length < 5) {
+                        alert('Please select at least 5 images.');
+                        input.value = ''; // Clear the input
+                        return;
+                      }
+
+                      setSubImage(filesArray); // Store the files array in state
+                    }
+                  }}
                 />
                 <p className="text-sm text-gray-600 dark:text-gray-400">
                   Please attach at least 5 images.
@@ -147,9 +246,15 @@ const CreateTour = () => {
                   <label className="mb-3 block text-black dark:text-white">
                     Tour in Top Deal
                   </label>
-                  <select className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary">
+                  <select
+                    onChange={(e) => {
+                      setTopDeal(e.target.value === '1');
+                    }}
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    value={topDeal ? '1' : '0'} // Bind the state value to the select element
+                  >
+                    <option value="0">No</option>
                     <option value="1">Yes</option>
-                    <option value="1">No</option>
                   </select>
                 </div>
               </div>
@@ -163,6 +268,8 @@ const CreateTour = () => {
                     type="number"
                     placeholder="Enter Rating in number"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    value={rating}
+                    onChange={(e) => setRating(e.target.value)}
                   />
                 </div>
 
@@ -174,6 +281,14 @@ const CreateTour = () => {
                     type="number"
                     placeholder="Enter stars from 1 to 5"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    value={stars !== undefined ? stars : ''}
+                    onChange={(e) =>
+                      setStars(
+                        e.target.value ? Number(e.target.value) : undefined,
+                      )
+                    }
+                    min="1" // Minimum value constraint
+                    max="5" // Maximum value constraint
                   />
                 </div>
               </div>
@@ -182,9 +297,14 @@ const CreateTour = () => {
                   <label className="mb-3 block text-black dark:text-white">
                     Luxury Hotel
                   </label>
-                  <select className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary">
-                    <option value="1">1</option>
-                    <option value="1">1</option>
+                  <select
+                    onChange={(e) => {
+                      setluxuryHotel(e.target.value === '1');
+                    }}
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                  >
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
                   </select>
                 </div>
 
@@ -192,9 +312,14 @@ const CreateTour = () => {
                   <label className="mb-3 block text-black dark:text-white">
                     Free Wifi
                   </label>
-                  <select className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary">
-                    <option value="1">1</option>
-                    <option value="1">1</option>
+                  <select
+                    onChange={(e) => {
+                      setFreeWifi(e.target.value === '1');
+                    }}
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                  >
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
                   </select>
                 </div>
                 <div className="w-full md:w-1/3 md:pl-2">
@@ -202,9 +327,14 @@ const CreateTour = () => {
                     Transport Facility
                   </label>
 
-                  <select className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary">
-                    <option value="1">1</option>
-                    <option value="1">1</option>
+                  <select
+                    onChange={(e) => {
+                      setTransport(e.target.value === '1');
+                    }}
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                  >
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
                   </select>
                 </div>
               </div>
@@ -213,9 +343,14 @@ const CreateTour = () => {
                   <label className="mb-3 block text-black dark:text-white">
                     Fooding (Lunch / Dinner)
                   </label>
-                  <select className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary">
-                    <option value="1">1</option>
-                    <option value="1">1</option>
+                  <select
+                    onChange={(e) => {
+                      setFooding(e.target.value === '1');
+                    }}
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                  >
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
                   </select>
                 </div>
 
@@ -227,6 +362,8 @@ const CreateTour = () => {
                     type="text"
                     placeholder="Enter in two to four words."
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    value={otherServices}
+                    onChange={(e) => setOtherServices(e.target.value)}
                   />
                 </div>
               </div>
@@ -255,6 +392,7 @@ const CreateTour = () => {
               </div> */}
               <button
                 // to="#"
+                onClick={createTourHandler}
                 className="inline-flex items-center justify-center gap-2.5 bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
               >
                 <span>
