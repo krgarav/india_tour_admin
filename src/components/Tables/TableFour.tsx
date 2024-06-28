@@ -105,7 +105,10 @@
 
 // export default TableFour;
 
+import { useEffect, useState } from 'react';
 import { Package } from '../../types/package';
+import axios from 'axios';
+const address = import.meta.env.VITE_API_ADDRESS;
 
 const packageData: Package[] = [
   {
@@ -135,6 +138,50 @@ const packageData: Package[] = [
 ];
 
 const TableFour = () => {
+  const [tours, setTours] = useState([] );
+  useEffect(() => {
+    const fetchTours = async () => {
+      try {
+        const response = await axios.get(`${address}/tours`, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        console.log('Tours fetched successfully:', response.data);
+        setTours(response.data.data);
+        // Handle the fetched data here
+      } catch (error) {
+        console.error('Error fetching tours:', error);
+        // Handle the error appropriately
+      }
+    };
+
+    fetchTours();
+  }, []);
+
+  const deleteHandler = async (id: Number) => {
+    console.log(id);
+    try {
+      const response = await axios.delete(`${address}/tour/delete/${id}`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      console.log('Tour deleted successfully:', response.data);
+      alert('Tour deleted successfully');
+
+      setTours(tours.filter((tour) => tour.id !== id));
+    } catch (error) {
+      alert('Tour cannot be deleted');
+      console.error('Error deleting tour:', error);
+      // Handle the error appropriately
+    }
+  };
+
+  // const allTours = tours.map((item)=>{
+  //   return(
+  // })
+
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <div className="max-w-full overflow-x-auto">
@@ -156,13 +203,13 @@ const TableFour = () => {
             </tr>
           </thead>
           <tbody>
-            {packageData.map((packageItem, key) => (
+            {tours.map((packageItem, key) => (
               <tr key={key}>
                 <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
                   <h5 className="font-medium text-black dark:text-white">
-                    {packageItem.name}
+                    {packageItem.tourTitle}
                   </h5>
-                  <p className="text-sm">₹{packageItem.price}/-</p>
+                  <p className="text-sm">₹{packageItem.tourPrice}/-</p>
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <p className="text-black dark:text-white">
@@ -174,12 +221,12 @@ const TableFour = () => {
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <p
                     className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium ${
-                      packageItem.status === 'Yes'
+                      packageItem.topDeals === true
                         ? 'bg-success text-success'
                         : 'bg-warning text-warning'
                     }`}
                   >
-                    {packageItem.status}
+                    {packageItem.topDeals ? 'Yes' : 'No'}
                   </p>
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
@@ -203,7 +250,12 @@ const TableFour = () => {
                         />
                       </svg>
                     </button>
-                    <button className="hover:text-danger">
+                    <button
+                      onClick={() => {
+                        deleteHandler(packageItem.id);
+                      }}
+                      className="hover:text-danger"
+                    >
                       <svg
                         className="fill-current"
                         width="18"

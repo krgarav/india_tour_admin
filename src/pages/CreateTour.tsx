@@ -38,45 +38,28 @@ const CreateTour = () => {
   const [otherServices, setOtherServices] = useState<string>('');
   const [tourLocation, setTourLocation] = useState<string>('');
   const address = import.meta.env.VITE_API_ADDRESS;
-  // const [tourTitle, setTourTitle] = useState('');
-  // const [tourTitle, setTourTitle] = useState('');
-
-  // function validateFiles(event: any) {
-  //   const input = event.target;
-  //   if (input.files.length < 5) {
-  //     alert('Please select at least 5 images.');
-  //     input.value = ''; // Clear the input
-  //   }
-  // }
 
   const createTourHandler = async () => {
-    console.log('jkhk');
     try {
-      // Create an object with textual/JSON data
-      const obj = {
-        title: tourTitle,
-        miniDesc: tourTitleDesc,
-        price: tourPrice,
-        durationDay: tourDayDuration,
-        durationNight: tourNightDuration,
-        location: tourLocation,
-        deals: topDeal,
-        rating: rating,
-        stars: stars,
-        longDesc: tourMainDesc,
-        luxuryHotel: luxuryHotel,
-        wifi: freeWifi,
-        transport: transport,
-        fooding: fooding,
-        others: otherServices,
-      };
-      console.log(obj);
-
       // Create a new FormData instance for file uploads
       const formData = new FormData();
 
-      // Append textual/JSON data to FormData
-      formData.append('data', JSON.stringify(obj));
+      // Append each field individually to FormData
+      formData.append('title', tourTitle);
+      formData.append('miniDesc', tourTitleDesc);
+      formData.append('price', tourPrice);
+      formData.append('durationDay', tourDayDuration);
+      formData.append('durationNight', tourNightDuration);
+      formData.append('location', tourLocation);
+      formData.append('deals', topDeal);
+      formData.append('rating', rating);
+      formData.append('stars', stars);
+      formData.append('longDesc', tourMainDesc);
+      formData.append('luxuryHotel', luxuryHotel);
+      formData.append('wifi', freeWifi);
+      formData.append('transport', transport);
+      formData.append('fooding', fooding);
+      formData.append('others', otherServices);
 
       // Append single image file (titleImage)
       if (titleImage) {
@@ -85,7 +68,7 @@ const CreateTour = () => {
 
       // Append multiple image files (subImage)
       subImage.forEach((image, index) => {
-        formData.append(`subImage_${index}`, image);
+        formData.append('SubImages', image);
       });
 
       // Make a POST request to your backend endpoint
@@ -94,7 +77,7 @@ const CreateTour = () => {
           'Content-Type': 'multipart/form-data',
         },
       });
-      console.log(response);
+
       console.log('Tour creation successful:', response.data);
       // Handle any success logic here
     } catch (error) {
@@ -102,6 +85,60 @@ const CreateTour = () => {
       // Handle errors appropriately
     }
   };
+
+  // const createTourHandler = async () => {
+  //   console.log('jkhk');
+  //   try {
+  //     // Create an object with textual/JSON data
+  //     const obj = {
+  //       title: tourTitle,
+  //       miniDesc: tourTitleDesc,
+  //       price: tourPrice,
+  //       durationDay: tourDayDuration,
+  //       durationNight: tourNightDuration,
+  //       location: tourLocation,
+  //       deals: topDeal,
+  //       rating: rating,
+  //       stars: stars,
+  //       longDesc: tourMainDesc,
+  //       luxuryHotel: luxuryHotel,
+  //       wifi: freeWifi,
+  //       transport: transport,
+  //       fooding: fooding,
+  //       others: otherServices,
+  //     };
+  //     console.log(obj);
+
+  //     // Create a new FormData instance for file uploads
+  //     const formData = new FormData();
+
+  //     // Append textual/JSON data to FormData
+  //     formData.append('data', JSON.stringify(obj));
+
+  //     // Append single image file (titleImage)
+  //     if (titleImage) {
+  //       formData.append('TitleImage', titleImage);
+  //     }
+
+  //     // Append multiple image files (subImage)
+  //     subImage.forEach((image, index) => {
+  //       formData.append(`subImage_${index}`, image);
+  //     });
+
+  //     // Make a POST request to your backend endpoint
+  //     const response = await axios.post(`${address}/createtour`, formData, {
+  //       headers: {
+  //         'Content-Type': 'multipart/form-data',
+  //       },
+  //     });
+  //     console.log(response);
+  //     console.log('Tour creation successful:', response.data);
+  //     // Handle any success logic here
+  //   } catch (error) {
+  //     console.error('Error creating tour:', error);
+  //     // Handle errors appropriately
+  //   }
+  // };
   return (
     <DefaultLayout>
       <Breadcrumb pageName="Create Tour" />
