@@ -39,6 +39,41 @@ const CreateTour = () => {
   const [otherServices, setOtherServices] = useState<string>('');
   const [tourLocation, setTourLocation] = useState<string>('');
   const address = import.meta.env.VITE_API_ADDRESS;
+
+  const [itinerary, setItinerary] = useState([
+    { day: 1, miniTitle: '', mainDescription: '' },
+  ]);
+
+  const handleChange = (index, field, value) => {
+    const updatedItinerary = [...itinerary];
+    updatedItinerary[index][field] = value;
+    setItinerary(updatedItinerary);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Handle form submission logic here, e.g., send `itinerary` state to backend
+    console.log(itinerary);
+  };
+
+  const addDay = () => {
+    const newDay = {
+      day: itinerary.length + 1,
+      miniTitle: '',
+      mainDescription: '',
+    };
+    setItinerary([...itinerary, newDay]);
+  };
+
+  const removeDay = (index) => {
+    const updatedItinerary = [...itinerary];
+    updatedItinerary.splice(index, 1);
+    // Update day numbers after deletion
+    updatedItinerary.forEach((item, idx) => {
+      item.day = idx + 1;
+    });
+    setItinerary(updatedItinerary);
+  };
   const resetForm = () => {
     setTourTitle('');
     setTourPrice('');
@@ -114,7 +149,10 @@ const CreateTour = () => {
         <div className="flex flex-col gap-9">
           {/* <!-- Create Input Fields --> */}
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+            <div
+              style={{ position: 'sticky' }}
+              className=" sticky top-0 z-10  border-b border-stroke py-4 px-6.5 dark:border-strokedark"
+            >
               <h3 className="font-medium text-black dark:text-white">
                 Create Tour Fields
               </h3>
@@ -374,6 +412,67 @@ const CreateTour = () => {
                 </div>
               </div>
 
+              <h2 className="text-2xl font-semibold mb-4">
+                Add Tour Itinerary
+              </h2>
+              <form
+                onSubmit={handleSubmit}
+                // className="grid grid-cols-1 sm:grid-cols-2 gap-6"
+              >
+                {itinerary.map((day, index) => (
+                  <div key={index} className="mb-4 p-4 border rounded">
+                    <h3 className="text-lg font-medium mb-2">Day {day.day}</h3>
+                    <div className="mb-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Mini Title:
+                      </label>
+                      <input
+                        type="text"
+                        className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                        value={day.miniTitle}
+                        onChange={(e) =>
+                          handleChange(index, 'miniTitle', e.target.value)
+                        }
+                      />
+                    </div>
+                    <div className="mb-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Main Description:
+                      </label>
+                      <textarea
+                        className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                        value={day.mainDescription}
+                        onChange={(e) =>
+                          handleChange(index, 'mainDescription', e.target.value)
+                        }
+                      />
+                    </div>
+                    {index >= 1 && (
+                      <button
+                        type="button"
+                        className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
+                        onClick={() => removeDay(index)}
+                      >
+                        Remove Day
+                      </button>
+                    )}
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 mr-2"
+                  onClick={addDay}
+                >
+                  Add Day
+                </button>
+                <button
+                  type="submit"
+                  className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
+                >
+                  Submit Itinerary
+                </button>
+              </form>
+
               <button
                 onClick={createTourHandler}
                 className="inline-flex items-center justify-center gap-2.5 bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
@@ -401,64 +500,6 @@ const CreateTour = () => {
               </button>
             </div>
           </div>
-
-          {/* <!-- Toggle switch input --> */}
-          {/* <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-              <h3 className="font-medium text-black dark:text-white">
-                Toggle switch input
-              </h3>
-            </div>
-            <div className="flex flex-col gap-5.5 p-6.5">
-              <SwitcherOne />
-              <SwitcherTwo />
-              <SwitcherThree />
-              <SwitcherFour />
-            </div>
-          </div> */}
-
-          {/* <!-- Time and date --> */}
-          {/* <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-              <h3 className="font-medium text-black dark:text-white">
-                Time and date
-              </h3>
-            </div>
-            <div className="flex flex-col gap-5.5 p-6.5">
-              <DatePickerOne />
-              <DatePickerTwo />
-            </div>
-          </div> */}
-
-          {/* <!-- File upload --> */}
-          {/* <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-              <h3 className="font-medium text-black dark:text-white">
-                File upload
-              </h3>
-            </div>
-            <div className="flex flex-col gap-5.5 p-6.5">
-              <div>
-                <label className="mb-3 block text-black dark:text-white">
-                  Attach file
-                </label>
-                <input
-                  type="file"
-                  className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
-                />
-              </div>
-
-              <div>
-                <label className="mb-3 block text-black dark:text-white">
-                  Attach file
-                </label>
-                <input
-                  type="file"
-                  className="w-full rounded-md border border-stroke p-3 outline-none transition file:mr-4 file:rounded file:border-[0.5px] file:border-stroke file:bg-[#EEEEEE] file:py-1 file:px-2.5 file:text-sm focus:border-primary file:focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-strokedark dark:file:bg-white/30 dark:file:text-white"
-                />
-              </div>
-            </div>
-          </div> */}
         </div>
 
         <div className="flex flex-col gap-9">

@@ -109,6 +109,7 @@ import { useEffect, useState } from 'react';
 import { Package } from '../../types/package';
 import axios from 'axios';
 const address = import.meta.env.VITE_API_ADDRESS;
+import { toast } from 'react-toastify';
 
 const packageData: Package[] = [
   {
@@ -138,7 +139,7 @@ const packageData: Package[] = [
 ];
 
 const TableFour = () => {
-  const [tours, setTours] = useState([] );
+  const [tours, setTours] = useState([]);
   useEffect(() => {
     const fetchTours = async () => {
       try {
@@ -148,10 +149,12 @@ const TableFour = () => {
           },
         });
         console.log('Tours fetched successfully:', response.data);
+
         setTours(response.data.data);
         // Handle the fetched data here
       } catch (error) {
-        console.error('Error fetching tours:', error);
+        console.error('Error fetching tours:', error);  
+
         // Handle the error appropriately
       }
     };
@@ -168,11 +171,11 @@ const TableFour = () => {
         },
       });
       console.log('Tour deleted successfully:', response.data);
-      alert('Tour deleted successfully');
 
+      toast.success('Tour Deleted Successfully');
       setTours(tours.filter((tour) => tour.id !== id));
     } catch (error) {
-      alert('Tour cannot be deleted');
+      toast.error('Tour could not be deleted');
       console.error('Error deleting tour:', error);
       // Handle the error appropriately
     }
