@@ -16,6 +16,7 @@ import MultiSelect from '../components/Forms/MultiSelect';
 import SelectState from '../components/Forms/SelectGroup/SelectState';
 import { useRef, useState } from 'react';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const CreateTour = () => {
   const [tourTitle, setTourTitle] = useState('');
@@ -31,13 +32,32 @@ const CreateTour = () => {
   const [topDeal, setTopDeal] = useState<boolean>(false);
   const [rating, setRating] = useState<string>('');
   const [stars, setStars] = useState<number | undefined>(undefined);
-  const [luxuryHotel, setluxuryHotel] = useState<boolean>(false);
+  const [luxuryHotel, setLuxuryHotel] = useState<boolean>(false);
   const [freeWifi, setFreeWifi] = useState<boolean>(false);
   const [transport, setTransport] = useState<boolean>(false);
   const [fooding, setFooding] = useState<boolean>(false);
   const [otherServices, setOtherServices] = useState<string>('');
   const [tourLocation, setTourLocation] = useState<string>('');
   const address = import.meta.env.VITE_API_ADDRESS;
+  const resetForm = () => {
+    setTourTitle('');
+    setTourPrice('');
+    setTourDayDuration('');
+    setTourNightDuration('');
+    setTourTitleDesc('');
+    setTourMainDesc('');
+    setTitleImage(null);
+    setSubImage([]);
+    setTopDeal(false);
+    setRating('');
+    setStars(undefined);
+    setLuxuryHotel(false);
+    setFreeWifi(false);
+    setTransport(false);
+    setFooding(false);
+    setOtherServices('');
+    setTourLocation('');
+  };
 
   const createTourHandler = async () => {
     try {
@@ -51,9 +71,9 @@ const CreateTour = () => {
       formData.append('durationDay', tourDayDuration);
       formData.append('durationNight', tourNightDuration);
       formData.append('location', tourLocation);
-      formData.append('deals', topDeal);
+      formData.append('deals', topDeal.toString());
       formData.append('rating', rating);
-      formData.append('stars', stars);
+      formData.append('stars', stars !== undefined ? stars.toString() : '');
       formData.append('longDesc', tourMainDesc);
       formData.append('luxuryHotel', luxuryHotel);
       formData.append('wifi', freeWifi);
@@ -77,7 +97,8 @@ const CreateTour = () => {
           'Content-Type': 'multipart/form-data',
         },
       });
-
+      toast.success(`${tourTitle} Added`);
+      resetForm();
       console.log('Tour creation successful:', response.data);
       // Handle any success logic here
     } catch (error) {
@@ -86,59 +107,6 @@ const CreateTour = () => {
     }
   };
 
-  // const createTourHandler = async () => {
-  //   console.log('jkhk');
-  //   try {
-  //     // Create an object with textual/JSON data
-  //     const obj = {
-  //       title: tourTitle,
-  //       miniDesc: tourTitleDesc,
-  //       price: tourPrice,
-  //       durationDay: tourDayDuration,
-  //       durationNight: tourNightDuration,
-  //       location: tourLocation,
-  //       deals: topDeal,
-  //       rating: rating,
-  //       stars: stars,
-  //       longDesc: tourMainDesc,
-  //       luxuryHotel: luxuryHotel,
-  //       wifi: freeWifi,
-  //       transport: transport,
-  //       fooding: fooding,
-  //       others: otherServices,
-  //     };
-  //     console.log(obj);
-
-  //     // Create a new FormData instance for file uploads
-  //     const formData = new FormData();
-
-  //     // Append textual/JSON data to FormData
-  //     formData.append('data', JSON.stringify(obj));
-
-  //     // Append single image file (titleImage)
-  //     if (titleImage) {
-  //       formData.append('TitleImage', titleImage);
-  //     }
-
-  //     // Append multiple image files (subImage)
-  //     subImage.forEach((image, index) => {
-  //       formData.append(`subImage_${index}`, image);
-  //     });
-
-  //     // Make a POST request to your backend endpoint
-  //     const response = await axios.post(`${address}/createtour`, formData, {
-  //       headers: {
-  //         'Content-Type': 'multipart/form-data',
-  //       },
-  //     });
-  //     console.log(response);
-  //     console.log('Tour creation successful:', response.data);
-  //     // Handle any success logic here
-  //   } catch (error) {
-  //     console.error('Error creating tour:', error);
-  //     // Handle errors appropriately
-  //   }
-  // };
   return (
     <DefaultLayout>
       <Breadcrumb pageName="Create Tour" />
@@ -302,6 +270,7 @@ const CreateTour = () => {
                     Rating
                   </label>
                   <input
+                    min={1}
                     type="number"
                     placeholder="Enter Rating in number"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -336,7 +305,7 @@ const CreateTour = () => {
                   </label>
                   <select
                     onChange={(e) => {
-                      setluxuryHotel(e.target.value === '1');
+                      setLuxuryHotel(e.target.value === '1');
                     }}
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                   >
@@ -404,31 +373,8 @@ const CreateTour = () => {
                   />
                 </div>
               </div>
-              {/* rating , star, top deals. */}
-              {/* <div>
-                <label className="mb-3 block text-black dark:text-white">
-                  Active Input
-                </label>
-                <input
-                  type="text"
-                  placeholder="Active Input"
-                  className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
-                />
-              </div>
 
-              <div>
-                <label className="mb-3 block font-medium text-black dark:text-white">
-                  Disabled label
-                </label>
-                <input
-                  type="text"
-                  placeholder="Disabled label"
-                  disabled
-                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary dark:disabled:bg-black"
-                />
-              </div> */}
               <button
-                // to="#"
                 onClick={createTourHandler}
                 className="inline-flex items-center justify-center gap-2.5 bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
               >

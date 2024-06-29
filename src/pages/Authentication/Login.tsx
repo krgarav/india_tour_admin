@@ -27,14 +27,25 @@ const Login: React.FC = () => {
           console.log(response.data);
           navigate('/dashboard');
         } catch (error: any) {
-          if (error.resaponse) {
-            if (error.response.data.error) {
-              alert(error.response.data.error);
+          setIsLoading(false); // Assuming you have setLoading state variable
+          if (error.response) {
+            // Server responded with an error status code (4xx or 5xx)
+            if (error.response.data && error.response.data.error) {
+              alert(error.response.data.error); // Display server-provided error message
+            } else {
+              alert('Server error occurred. Please try again later.'); // Fallback message for unknown server errors
             }
+          } else if (error.request) {
+            // Request made but no response received (network error)
+            alert(
+              'Network error occurred. Please check your internet connection.',
+            );
+          } else {
+            // Something happened in setting up the request that triggered an error
+            console.error('Error during request setup:', error.message);
+            alert('An unexpected error occurred. Please try again.');
           }
-          setIsLoading(false);
-          alert(error.message);
-          console.error('Error during login:', error);
+          console.error('Error during login:', error); // Log the error for debugging purposes
         }
       } else {
         alert('Email or password cannot empty');
