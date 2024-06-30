@@ -110,6 +110,7 @@ import { Package } from '../../types/package';
 import axios from 'axios';
 const address = import.meta.env.VITE_API_ADDRESS;
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const packageData: Package[] = [
   {
@@ -140,6 +141,7 @@ const packageData: Package[] = [
 
 const TableFour = () => {
   const [tours, setTours] = useState([]);
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchTours = async () => {
       try {
@@ -153,7 +155,7 @@ const TableFour = () => {
         setTours(response.data.data);
         // Handle the fetched data here
       } catch (error) {
-        console.error('Error fetching tours:', error);  
+        console.error('Error fetching tours:', error);
 
         // Handle the error appropriately
       }
@@ -179,6 +181,9 @@ const TableFour = () => {
       console.error('Error deleting tour:', error);
       // Handle the error appropriately
     }
+  };
+  const editHandler = (tourId) => {
+    navigate(`/tour-detail/${tourId}`);
   };
 
   // const allTours = tours.map((item)=>{
@@ -234,7 +239,10 @@ const TableFour = () => {
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <div className="flex items-center space-x-3.5">
-                    <button className="hover:text-primary">
+                    <button
+                      onClick={() => editHandler(packageItem.id)}
+                      className="hover:text-primary"
+                    >
                       <svg
                         className="fill-current"
                         width="18"

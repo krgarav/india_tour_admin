@@ -18,6 +18,7 @@ import Buttons from './pages/UiElements/Buttons';
 import Login from './pages/Authentication/Login';
 import CreateTour from './pages/CreateTour';
 import CreateTourPackage from './pages/CreateTourPackage';
+import TourDetail from './pages/TourDetail';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -168,6 +169,15 @@ function App() {
             <>
               <PageTitle title="Create Tour Package | TailAdmin - Tailwind CSS Admin Dashboard Template" />
               <CreateTourPackage />
+            </>
+          }
+        />
+        <Route
+          path="/tour-detail/:id"
+          element={
+            <>
+              <PageTitle title="Tour Detail | Triangle India Tour" />
+              <TourDetail />
             </>
           }
         />

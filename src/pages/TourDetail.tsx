@@ -14,11 +14,12 @@ import DatePickerTwo from '../components/Forms/DatePicker/DatePickerTwo';
 import SelectGroupTwo from '../components/Forms/SelectGroup/SelectGroupTwo';
 import MultiSelect from '../components/Forms/MultiSelect';
 import SelectState from '../components/Forms/SelectGroup/SelectState';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { useParams } from 'react-router-dom';
 
-const CreateTour = () => {
+const TourDetail = () => {
   const [tourTitle, setTourTitle] = useState('');
 
   const [tourPrice, setTourPrice] = useState('');
@@ -39,8 +40,53 @@ const CreateTour = () => {
   const [otherServices, setOtherServices] = useState<string>('');
   const [tourLocation, setTourLocation] = useState<string>('');
   const address = import.meta.env.VITE_API_ADDRESS;
+  const [loading, setLoading] = useState(true); // Initialize loading state
 
   const [itinerary, setItinerary] = useState([{ day: 1, title: '', desc: '' }]);
+  const { id } = useParams();
+
+  useEffect(() => {
+    const fetchTourDetail = async () => {
+      try {
+        const response = await axios.get(`${address}/tour/${id}`, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+
+        const { data, itneryTourData } = response.data;
+        const { TourDatum } = data;
+
+        console.log(data);
+        // Update state with the fetched data
+        setTourTitle(data.tourTitle || '');
+        setTourPrice(data.tourPrice || '');
+        setTourDayDuration(data.tourDurationDay || '');
+        setTourNightDuration(data.tourDurationNight || '');
+        setTourTitleDesc(data.miniTourDesc || '');
+        setTourMainDesc(TourDatum.fullDescription || '');
+        // setTitleImage(data.titleImage || null); // Adjust if the image is a URL
+        // setSubImage(data.subImage || []); // Adjust if the images are URLs
+        setTopDeal(data.topDeals || false);
+        setRating(data.rating || '');
+        setStars(data.stars || undefined);
+        setLuxuryHotel(TourDatum.luxuryHotel || false);
+        setFreeWifi(TourDatum.freeWifi || false);
+        setTransport(TourDatum.transport || false);
+        setFooding(TourDatum.fooding || false);
+        setOtherServices(TourDatum.others || '');
+        // setTourLocation(data.tourLocation || '');
+
+        setItinerary(itneryTourData);
+      } catch (error) {
+        console.error('Error occurred', error);
+      } finally {
+        setLoading(false); // Set loading to false after data is fetched
+      }
+    };
+
+    fetchTourDetail();
+  }, [id]);
 
   const handleChange = (index, field, value) => {
     const updatedItinerary = [...itinerary];
@@ -141,6 +187,10 @@ const CreateTour = () => {
       // Handle errors appropriately
     }
   };
+
+  if (loading) {
+    return <div className="loader">Loading...</div>; // Replace this with your actual loader component
+  }
 
   return (
     <DefaultLayout>
@@ -501,84 +551,9 @@ const CreateTour = () => {
             </div>
           </div>
         </div>
-
-        <div className="flex flex-col gap-9">
-          {/* <!-- Textarea Fields --> */}
-          {/* <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-              <h3 className="font-medium text-black dark:text-white">
-                Textarea Fields
-              </h3>
-            </div>
-            <div className="flex flex-col gap-5.5 p-6.5">
-              <div>
-                <label className="mb-3 block text-black dark:text-white">
-                  Default textarea
-                </label>
-                <textarea
-                  rows={6}
-                  placeholder="Default textarea"
-                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                ></textarea>
-              </div>
-
-              <div>
-                <label className="mb-3 block text-black dark:text-white">
-                  Active textarea
-                </label>
-                <textarea
-                  rows={6}
-                  placeholder="Active textarea"
-                  className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
-                ></textarea>
-              </div>
-
-              <div>
-                <label className="mb-3 block text-black dark:text-white">
-                  Disabled textarea
-                </label>
-                <textarea
-                  rows={6}
-                  disabled
-                  placeholder="Disabled textarea"
-                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary dark:disabled:bg-black"
-                ></textarea>
-              </div>
-            </div>
-          </div> */}
-
-          {/* <!-- Checkbox and radio --> */}
-          {/* <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-              <h3 className="font-medium text-black dark:text-white">
-                Checkbox and radio
-              </h3>
-            </div>
-            <div className="flex flex-col gap-5.5 p-6.5">
-              <CheckboxOne />
-              <CheckboxTwo />
-              <CheckboxThree />
-              <CheckboxFour />
-              <CheckboxFive />
-            </div>
-          </div> */}
-
-          {/* <!-- Select input --> */}
-          {/* <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-              <h3 className="font-medium text-black dark:text-white">
-                Select input
-              </h3>
-            </div>
-            <div className="flex flex-col gap-5.5 p-6.5">
-              <SelectGroupTwo />
-              <MultiSelect id="multiSelect" />
-            </div>
-          </div> */}
-        </div>
       </div>
     </DefaultLayout>
   );
 };
 
-export default CreateTour;
+export default TourDetail;
