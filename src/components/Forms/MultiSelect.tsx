@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import axios from 'axios';
+const address = import.meta.env.VITE_API_ADDRESS;
 
 interface Option {
   value: string;
@@ -9,33 +11,62 @@ interface Option {
 
 interface DropdownProps {
   id: string;
+  onOptionsChange: Function;
 }
 
-const MultiSelect: React.FC<DropdownProps> = ({ id }) => {
+const MultiSelect: React.FC<DropdownProps> = ({ id, onOptionsChange }) => {
   const [options, setOptions] = useState<Option[]>([]);
   const [selected, setSelected] = useState<number[]>([]);
   const [show, setShow] = useState(false);
   const dropdownRef = useRef<any>(null);
   const trigger = useRef<any>(null);
-
   useEffect(() => {
-    const loadOptions = () => {
-      const select = document.getElementById(id) as HTMLSelectElement | null;
-      if (select) {
-        const newOptions: Option[] = [];
-        for (let i = 0; i < select.options.length; i++) {
-          newOptions.push({
-            value: select.options[i].value,
-            text: select.options[i].innerText,
-            selected: select.options[i].hasAttribute('selected'),
+    onOptionsChange(selected);
+  }, [selected]);
+  useEffect(() => {
+    const loadOptions = async () => {
+      try {
+        const response = await axios.get(`${address}/tours`, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+
+        const select = document.getElementById(id) as HTMLSelectElement | null;
+        if (select) {
+          // Clear existing options
+          select.options.length = 0;
+
+          // Create options from response data
+          const newOptions: Option[] = response.data.data.map((item) => ({
+            value: item.id, // Adjust according to the structure of your data
+            text: item.tourTitle, // Adjust according to the structure of your data
+            selected: false,
+          }));
+
+          // Add new options to the select element
+          newOptions.forEach((optionData) => {
+            const option = new Option(
+              optionData.text,
+              optionData.value,
+              optionData.selected,
+              // optionData.selected,
+            );
+            select.add(option);
           });
+
+          // Update the state with new options
+          console.log(newOptions);
+
+          setOptions(newOptions);
         }
-        setOptions(newOptions);
+      } catch (error) {
+        console.error('Error loading options:', error);
       }
     };
 
     loadOptions();
-  }, [id]);
+  }, [address, id, setOptions]);
 
   const open = () => {
     setShow(true);

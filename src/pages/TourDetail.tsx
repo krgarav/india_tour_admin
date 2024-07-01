@@ -41,7 +41,7 @@ const TourDetail = () => {
   const [tourLocation, setTourLocation] = useState<string>('');
   const address = import.meta.env.VITE_API_ADDRESS;
   const [loading, setLoading] = useState(true); // Initialize loading state
-
+  const [images, setImages] = useState(["https://picsum.photos/200","https://picsum.photos/200","https://picsum.photos/200"]);
   const [itinerary, setItinerary] = useState([{ day: 1, title: '', desc: '' }]);
   const { id } = useParams();
 
@@ -187,6 +187,9 @@ const TourDetail = () => {
       // Handle errors appropriately
     }
   };
+  const handleImageDelete = (imageUrl) => {
+    setImages(images.filter((image) => image !== imageUrl));
+  };
 
   if (loading) {
     return <div className="loader">Loading...</div>; // Replace this with your actual loader component
@@ -289,6 +292,23 @@ const TourDetail = () => {
                   value={tourMainDesc}
                   onChange={(e) => setTourMainDesc(e.target.value)}
                 ></textarea>
+              </div>
+              <div className="flex flex-wrap mt-4">
+                {images.map((image, index) => (
+                  <div key={index} className="relative m-2">
+                    <img
+                      src={image}
+                      alt={`Thumbnail ${index}`}
+                      className="w-24 h-24 object-cover rounded-lg shadow-md"
+                    />
+                    <button
+                      onClick={() => handleImageDelete(image)}
+                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
               </div>
               <div>
                 <label className="mb-3 block text-black dark:text-white">

@@ -132,8 +132,9 @@ const CreateTour = () => {
           'Content-Type': 'multipart/form-data',
         },
       });
+      console.log(response)
       toast.success(`${tourTitle} Added`);
-      resetForm();
+      // resetForm();
       console.log('Tour creation successful:', response.data);
       // Handle any success logic here
     } catch (error) {
