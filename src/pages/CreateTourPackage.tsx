@@ -16,16 +16,48 @@ import MultiSelect from '../components/Forms/MultiSelect';
 import SelectState from '../components/Forms/SelectGroup/SelectState';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 const address = import.meta.env.VITE_API_ADDRESS;
 const CreateTourPackage = () => {
   const [options, setOptions] = useState<File[]>([]);
   const [title, setTitle] = useState<String>('');
-  const [background, setBackgroundImage] = useState<String>('');
+  const [backgroundImage, setBackgroundImage] = useState<String>('');
   const handleOptionsChange = (newOptions: any) => {
     console.log(newOptions);
     setOptions(newOptions);
   };
 
+  const handleClick = async() => {
+    console.log(options)
+    try {
+      // Create a new FormData instance for file uploads
+      const formData = new FormData();
+
+      // Append each field individually to FormData
+      formData.append('tourPackageTitle', title);
+      formData.append('toursIncluded', JSON.stringify(options));
+
+      // Append single image file (titleImage)
+      if (backgroundImage) {
+        formData.append('TourBGImage', backgroundImage);
+      }
+
+      // Make a POST request to your backend endpoint
+      const response = await axios.post(`${address}/createtourpackage`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      console.log(response);
+      toast.success(`${title} Added`);
+      // resetForm();
+      console.log('Tour creation successful:', response.data);
+      // Handle any success logic here
+    } catch (error) {
+      console.error('Error creating tour:', error);
+      // Handle errors appropriately
+    }
+  };
   return (
     <DefaultLayout>
       <Breadcrumb pageName="Create Tour Package" />
@@ -97,6 +129,7 @@ const CreateTourPackage = () => {
               <button
                 // to="#"
                 className="inline-flex items-center justify-center gap-2.5 bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
+                onClick={handleClick}
               >
                 <span>
                   <svg
