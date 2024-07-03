@@ -146,7 +146,7 @@ const CreateTour = () => {
   };
   const locationHandler = (value) => {
     setTourLocation(value);
-    // console.log(value);
+    console.log(value);
   };
   return (
     <DefaultLayout>
