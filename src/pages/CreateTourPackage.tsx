@@ -12,30 +12,54 @@ import DefaultLayout from '../layout/DefaultLayout';
 import DatePickerOne from '../components/Forms/DatePicker/DatePickerOne';
 import DatePickerTwo from '../components/Forms/DatePicker/DatePickerTwo';
 import SelectGroupTwo from '../components/Forms/SelectGroup/SelectGroupTwo';
-import MultiSelect from '../components/Forms/MultiSelect';
+// import MultiSelect from '../components/Forms/MultiSelect';
 import SelectState from '../components/Forms/SelectGroup/SelectState';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { MultiSelect } from 'react-multi-select-component';
 const address = import.meta.env.VITE_API_ADDRESS;
 const CreateTourPackage = () => {
   const [options, setOptions] = useState<File[]>([]);
   const [title, setTitle] = useState<String>('');
   const [backgroundImage, setBackgroundImage] = useState<String>('');
-  const handleOptionsChange = (newOptions: any) => {
-    console.log(newOptions);
-    setOptions(newOptions);
-  };
+  const [selected, setSelected] = useState([]);
 
-  const handleClick = async() => {
-    console.log(options)
+  useEffect(() => {
+    const loadOption = async () => {
+      try {
+        const response = await axios.get(`${address}/tours`, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        // console.log(response);
+
+        const options = response.data.data.map((item: Object) => ({
+          value: item.id,
+          label: item.tourTitle,
+        }));
+        setOptions(options);
+      } catch (error) {
+        console.error('Error loading options:', error);
+      }
+    };
+    loadOption();
+  }, []);
+
+  const handleChange = (selectedOptions) => {
+    const selectedValues = selectedOptions.map((option) => option.value);
+    setSelected(selectedValues);
+  };
+  const handleClick = async () => {
+    console.log(selected);
     try {
       // Create a new FormData instance for file uploads
       const formData = new FormData();
 
       // Append each field individually to FormData
       formData.append('tourPackageTitle', title);
-      formData.append('toursIncluded', JSON.stringify(options));
+      formData.append('toursIncluded', JSON.stringify(selected));
 
       // Append single image file (titleImage)
       if (backgroundImage) {
@@ -43,17 +67,24 @@ const CreateTourPackage = () => {
       }
 
       // Make a POST request to your backend endpoint
-      const response = await axios.post(`${address}/createtourpackage`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
+      const response = await axios.post(
+        `${address}/createtourpackage`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
         },
-      });
+      );
       console.log(response);
       toast.success(`${title} Added`);
       // resetForm();
       console.log('Tour creation successful:', response.data);
       // Handle any success logic here
     } catch (error) {
+      if (error?.response?.data.message) {
+        toast.error(JSON.stringify(error?.response?.data.message));
+      }
       console.error('Error creating tour:', error);
       // Handle errors appropriately
     }
@@ -83,12 +114,21 @@ const CreateTourPackage = () => {
                   onChange={(e) => setTitle(e.target.value)}
                 />
               </div>
-
+              {/* 
               <MultiSelect
                 id="multiSelect"
                 onOptionsChange={handleOptionsChange}
-              />
+              /> */}
 
+              <MultiSelect
+                className="mb-3 block text-sm font-medium text-black  border border-stroke py-2 pl-3 pr-3 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input"
+                options={options}
+                value={options.filter((option) =>
+                  selected.includes(option.value),
+                )}
+                onChange={handleChange}
+                labelledBy="Select"
+              />
               <div>
                 <label className="mb-3 block text-black dark:text-white">
                   Attach Background Image

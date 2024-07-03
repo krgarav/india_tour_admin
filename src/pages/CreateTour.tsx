@@ -63,7 +63,7 @@ const CreateTour = () => {
     setItinerary([...itinerary, newDay]);
   };
 
-  const removeDay = (index) => {
+  const removeDay = (index: any) => {
     const updatedItinerary = [...itinerary];
     updatedItinerary.splice(index, 1);
     // Update day numbers after deletion
@@ -104,7 +104,9 @@ const CreateTour = () => {
       formData.append('price', tourPrice);
       formData.append('durationDay', tourDayDuration);
       formData.append('durationNight', tourNightDuration);
-      formData.append('location', tourLocation);
+      formData.append('state', tourLocation);
+      formData.append('city', 'Agra');
+
       formData.append('deals', topDeal.toString());
       formData.append('rating', rating);
       formData.append('stars', stars !== undefined ? stars.toString() : '');
@@ -132,7 +134,7 @@ const CreateTour = () => {
           'Content-Type': 'multipart/form-data',
         },
       });
-      console.log(response)
+      console.log(response);
       toast.success(`${tourTitle} Added`);
       // resetForm();
       console.log('Tour creation successful:', response.data);
@@ -142,7 +144,10 @@ const CreateTour = () => {
       // Handle errors appropriately
     }
   };
-
+  const locationHandler = (value) => {
+    setTourLocation(value);
+    // console.log(value);
+  };
   return (
     <DefaultLayout>
       <Breadcrumb pageName="Create Tour" />
@@ -192,7 +197,7 @@ const CreateTour = () => {
                     Tour Duration (Day)
                   </label>
                   <input
-                    type="text"
+                    type="number"
                     placeholder="Enter Duration in Days"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     value={tourDayDuration}
@@ -205,7 +210,7 @@ const CreateTour = () => {
                     Tour Duration (Night)
                   </label>
                   <input
-                    type="text"
+                    type="number"
                     placeholder="Enter Duration in Nights"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     value={tourNightDuration}
@@ -284,7 +289,7 @@ const CreateTour = () => {
               </div>
               <div className="grid sm:grid-cols-2 md:flex md:flex-row">
                 <div className="w-full md:w-1/2 md:pr-2">
-                  <SelectState />
+                  <SelectState onChange={locationHandler} />
                 </div>
                 <div className="w-full md:w-1/2 md:pr-2">
                   <label className="mb-3 block text-black dark:text-white">

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const SelectState: React.FC = () => {
+const SelectState: React.FC = ({ onChange }) => {
   const [selectedOption, setSelectedOption] = useState<string>('');
   const [isOptionSelected, setIsOptionSelected] = useState<boolean>(false);
 
@@ -49,6 +49,7 @@ const SelectState: React.FC = () => {
         <select
           value={selectedOption}
           onChange={(e) => {
+            onChange(e.target.value);
             setSelectedOption(e.target.value);
             changeTextColor();
           }}
