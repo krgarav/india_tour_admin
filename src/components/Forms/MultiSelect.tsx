@@ -38,7 +38,7 @@ const MultiSelect: React.FC<DropdownProps> = ({ id, onOptionsChange }) => {
           select.options.length = 0;
 
           // Create options from response data
-          const newOptions: Option[] = response.data.data.map((item) => ({
+          const newOptions: Option[] = response.data.data.map((item : any) => ({
             value: item.id, // Adjust according to the structure of your data
             text: item.tourTitle, // Adjust according to the structure of your data
             selected: false,
