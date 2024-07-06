@@ -339,8 +339,6 @@ const CreateTour = () => {
                         e.target.value ? Number(e.target.value) : undefined,
                       )
                     }
-                    min="1" // Minimum value constraint
-                    max="5" // Maximum value constraint
                   />
                 </div>
               </div>

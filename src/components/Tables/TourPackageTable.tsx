@@ -5,28 +5,27 @@ const address = import.meta.env.VITE_API_ADDRESS;
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import TextBoxes from '../TextBox';
-
-const TableFour = () => {
+const TourPackageTable = () => {
   const [tours, setTours] = useState([]);
   const navigate = useNavigate();
   useEffect(() => {
     const fetchTours = async () => {
       try {
         // Fetch the tours
-        const response = await axios.get(`${address}/tours`, {
+        const response = await axios.get(`${address}/get/tourpackages`, {
           headers: {
             'Content-Type': 'application/json',
           },
         });
 
-        const tours = response.data.data; // assuming your data structure
+        const packages = response.data.allPackageTours; // assuming your data structure
         console.log('Tours fetched successfully:', tours);
 
         // Fetch packages for each tour
-        const fetchPackages = tours.map(async (tour) => {
+        const fetchPackages = packages.map(async (tour) => {
           try {
             const packageResponse = await axios.get(
-              `${address}/gettourpackages/${tour.id}`,
+              `${address}/get/tourpackage/${tour.id}`,
             );
             return { ...tour, packages: packageResponse.data };
           } catch (packageError) {
@@ -90,42 +89,39 @@ const TableFour = () => {
           <thead>
             <tr className="bg-gray-2 text-left dark:bg-meta-4">
               <th className="min-w-[220px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                Tour Name
+                PACKAGE NAME
               </th>
-              <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
-                Tour Packages Involvement
+              <th className="min-w-[150px] py-4 px-4 font-medium text-black text-center dark:text-white">
+                TOURS INCLUDED
               </th>
-              <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
+              {/* <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
                 Top Deals
-              </th>
+              </th> */}
               <th className="py-4 px-4 font-medium text-black dark:text-white">
-                Actions
+                ACTIONS
               </th>
             </tr>
           </thead>
           <tbody>
             {tours.map((packageItem, key) => {
+              console.log(packageItem.packages.tours.tourTitle);
               const packagesItem =
                 packageItem?.packages && !Array.isArray(packageItem.packages)
-                  ? packageItem.packages.packageDetails.map(
-                      (item) => item.packageTitle,
-                    )
-                  : ['No Package Involved'];
-              console.log(packagesItem);
+                  ? packageItem.packages.tours.map((item) => item.tourTitle)
+                  : ['No Tours Added'];
               return (
                 <tr key={key}>
-                  <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
-                    <h5 className="font-medium text-black dark:text-white">
-                      {packageItem.tourTitle}
-                    </h5>
-                    <p className="text-sm">₹{packageItem.tourPrice}/-</p>
+                  <td className=" w-[15%] border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
+                    <h3 className="font-medium text-xl text-black dark:text-white">
+                      {packageItem.packageTitle}
+                    </h3>
                   </td>
-                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark w-[55%]">
+                  <td className=" w-[75%] border-b border-[#eee] py-5 px-4 dark:border-strokedark ">
                     <p className="text-black dark:text-white">
                       <TextBoxes strings={packagesItem} />
                     </p>
                   </td>
-                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                  {/* <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                     <p
                       className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium ${
                         packageItem.topDeals === true
@@ -135,8 +131,8 @@ const TableFour = () => {
                     >
                       {packageItem.topDeals ? 'Yes' : 'No'}
                     </p>
-                  </td>
-                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                  </td> */}
+                  <td className=" w-[10%] border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                     <div className="flex items-center space-x-3.5">
                       <button
                         onClick={() => editHandler(packageItem.id)}
@@ -204,4 +200,4 @@ const TableFour = () => {
   );
 };
 
-export default TableFour;
+export default TourPackageTable;

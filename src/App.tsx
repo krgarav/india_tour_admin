@@ -19,6 +19,7 @@ import Login from './pages/Authentication/Login';
 import CreateTour from './pages/CreateTour';
 import CreateTourPackage from './pages/CreateTourPackage';
 import TourDetail from './pages/TourDetail';
+import AllTourPackages from './pages/AllTourPackages';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -178,6 +179,15 @@ function App() {
             <>
               <PageTitle title="Tour Detail | Triangle India Tour" />
               <TourDetail />
+            </>
+          }
+        />
+        <Route
+          path="/all-tour-packages"
+          element={
+            <>
+              <PageTitle title="All Packages | Triangle India Tour" />
+              <AllTourPackages />
             </>
           }
         />
