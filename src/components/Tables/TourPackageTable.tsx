@@ -104,7 +104,6 @@ const TourPackageTable = () => {
           </thead>
           <tbody>
             {tours.map((packageItem, key) => {
-              console.log(packageItem.packages.tours.tourTitle);
               const packagesItem =
                 packageItem?.packages && !Array.isArray(packageItem.packages)
                   ? packageItem.packages.tours.map((item) => item.tourTitle)
