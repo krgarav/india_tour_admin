@@ -191,6 +191,15 @@ function App() {
             </>
           }
         />
+        <Route
+          path="/manage-seo"
+          element={
+            <>
+              <PageTitle title="SEO Mangement | Triangle India Tour" />
+              <AllTourPackages />
+            </>
+          }
+        />
       </Routes>
     </>
   );
