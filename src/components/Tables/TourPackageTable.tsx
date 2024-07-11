@@ -19,7 +19,6 @@ const TourPackageTable = () => {
         });
 
         const packages = response.data.allPackageTours; // assuming your data structure
-        console.log('Tours fetched successfully:', tours);
 
         // Fetch packages for each tour
         const fetchPackages = packages.map(async (tour) => {
@@ -39,8 +38,6 @@ const TourPackageTable = () => {
 
         // Wait for all package requests to complete
         const toursWithPackages = await Promise.all(fetchPackages);
-        console.log('Tours with packages:', toursWithPackages);
-
         // Update state with tours including their packages
         setTours(toursWithPackages);
       } catch (error) {
@@ -57,12 +54,14 @@ const TourPackageTable = () => {
         'Are you sure you want to delete this tour?',
       );
       if (result) {
-        const response = await axios.delete(`${address}/tour/delete/${id}`, {
-          headers: {
-            'Content-Type': 'application/json',
+        const response = await axios.delete(
+          `${address}/delete/tourpackage/${id}`,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
           },
-        });
-        console.log('Tour deleted successfully:', response.data);
+        );
 
         toast.success('Tour Deleted Successfully');
         setTours(tours.filter((tour) => tour.id !== id));
@@ -75,12 +74,9 @@ const TourPackageTable = () => {
     }
   };
   const editHandler = (tourId: Number) => {
-    navigate(`/tour-detail/${tourId}`);
+    navigate(`/tour-package/${tourId}`);
   };
 
-  // const allTours = tours.map((item)=>{
-  //   return(
-  // })
 
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">

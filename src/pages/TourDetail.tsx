@@ -28,8 +28,8 @@ const TourDetail = () => {
 
   const [tourTitleDesc, setTourTitleDesc] = useState('');
   const [tourMainDesc, setTourMainDesc] = useState('');
-  const [titleImage, setTitleImage] = useState<File | null>(null);
-  const [subImage, setSubImage] = useState<File[]>([]);
+  const [titleImage, setTitleImage] = useState<String>('');
+  const [subImage, setSubImage] = useState<Array>([]);
   const [topDeal, setTopDeal] = useState<boolean>(false);
   const [rating, setRating] = useState<string>('');
   const [stars, setStars] = useState<number | undefined>(undefined);
@@ -41,7 +41,11 @@ const TourDetail = () => {
   const [tourLocation, setTourLocation] = useState<string>('');
   const address = import.meta.env.VITE_API_ADDRESS;
   const [loading, setLoading] = useState(true); // Initialize loading state
-  const [images, setImages] = useState(["https://picsum.photos/200","https://picsum.photos/200","https://picsum.photos/200"]);
+  const [images, setImages] = useState([
+    'https://picsum.photos/200',
+    'https://picsum.photos/200',
+    'https://picsum.photos/200',
+  ]);
   const [itinerary, setItinerary] = useState([{ day: 1, title: '', desc: '' }]);
   const { id } = useParams();
 
@@ -65,8 +69,8 @@ const TourDetail = () => {
         setTourNightDuration(data.tourDurationNight || '');
         setTourTitleDesc(data.miniTourDesc || '');
         setTourMainDesc(TourDatum.fullDescription || '');
-        // setTitleImage(data.titleImage || null); // Adjust if the image is a URL
-        // setSubImage(data.subImage || []); // Adjust if the images are URLs
+        setTitleImage(data.tourTitleImage); // Adjust if the image is a URL
+        setSubImage(data.SubImages.map((item) => item.filename)); // Adjust if the images are URLs
         setTopDeal(data.topDeals || false);
         setRating(data.rating || '');
         setStars(data.stars || undefined);
@@ -194,7 +198,7 @@ const TourDetail = () => {
   if (loading) {
     return <div className="loader">Loading...</div>; // Replace this with your actual loader component
   }
-
+  console.log(titleImage);
   return (
     <DefaultLayout>
       <Breadcrumb pageName="Create Tour" />
@@ -273,7 +277,6 @@ const TourDetail = () => {
                   rows={2}
                   placeholder="Enter up to 20 words"
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  maxLength="200"
                   value={tourTitleDesc}
                   onChange={(e) => setTourTitleDesc(e.target.value)}
                 ></textarea>
@@ -293,60 +296,50 @@ const TourDetail = () => {
                   onChange={(e) => setTourMainDesc(e.target.value)}
                 ></textarea>
               </div>
-              <div className="flex flex-wrap mt-4">
-                {images.map((image, index) => (
-                  <div key={index} className="relative m-2">
+
+              <div>
+                <label className="mb-3 block text-black dark:text-white">
+                  Attached Title Image
+                </label>
+                <div className="flex flex-wrap mt-4">
+                  <div className="relative m-2">
                     <img
-                      src={image}
-                      alt={`Thumbnail ${index}`}
+                      src={`${address}/images/${titleImage}`}
+                      alt={`Thumbnail `}
                       className="w-24 h-24 object-cover rounded-lg shadow-md"
                     />
                     <button
-                      onClick={() => handleImageDelete(image)}
+                      // onClick={() => handleImageDelete()}
                       className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs"
                     >
                       ✕
                     </button>
                   </div>
-                ))}
+                </div>
               </div>
               <div>
                 <label className="mb-3 block text-black dark:text-white">
-                  Attach Title Image
+                  Attached Sub Images
                 </label>
-                <input
-                  type="file"
-                  className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    if (e.target.files && e.target.files.length > 0) {
-                      setTitleImage(e.target.files[0]); // Store the file object in state
-                    }
-                  }}
-                />
-              </div>
-              <div>
-                <label className="mb-3 block text-black dark:text-white">
-                  Attach Sub Images
-                </label>
-                <input
-                  type="file"
-                  multiple
-                  className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    const input = e.target;
-                    if (input.files) {
-                      const filesArray = Array.from(input.files); // Convert FileList to Array
-
-                      if (filesArray.length < 5) {
-                        alert('Please select at least 5 images.');
-                        input.value = ''; // Clear the input
-                        return;
-                      }
-
-                      setSubImage(filesArray); // Store the files array in state
-                    }
-                  }}
-                />
+                <div className="flex flex-wrap mt-4">
+                  {subImage.map((image, index) => {
+                    return (
+                      <div key={index} className="relative m-2">
+                        <img
+                          src={`${address}/images/${image}`}
+                          alt={`Thumbnail ${index}`}
+                          className="w-24 h-24 object-cover rounded-lg shadow-md"
+                        />
+                        <button
+                          onClick={() => handleImageDelete(image)}
+                          className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
                   Please attach at least 5 images.
                 </p>
