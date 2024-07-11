@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const SelectGroupTwo: React.FC = () => {
+const SelectGroupTwo: React.FC = (props) => {
   const [selectedOption, setSelectedOption] = useState<string>('');
   const [isOptionSelected, setIsOptionSelected] = useState<boolean>(false);
 
@@ -11,7 +11,7 @@ const SelectGroupTwo: React.FC = () => {
   return (
     <div>
       <label className="mb-3 block text-black dark:text-white">
-        Select Country
+        Select Page For SEO Adjustment
       </label>
 
       <div className="relative z-20 bg-white dark:bg-form-input">
@@ -57,16 +57,16 @@ const SelectGroupTwo: React.FC = () => {
           }`}
         >
           <option value="" disabled className="text-body dark:text-bodydark">
-            Select Country
+            Select Page 
           </option>
           <option value="USA" className="text-body dark:text-bodydark">
-            USA
+            Homepage
           </option>
           <option value="UK" className="text-body dark:text-bodydark">
-            UK
+            Golden Tour
           </option>
           <option value="Canada" className="text-body dark:text-bodydark">
-            Canada
+            Winter Tour
           </option>
         </select>
 

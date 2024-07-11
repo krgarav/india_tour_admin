@@ -20,6 +20,8 @@ import CreateTour from './pages/CreateTour';
 import CreateTourPackage from './pages/CreateTourPackage';
 import TourDetail from './pages/TourDetail';
 import AllTourPackages from './pages/AllTourPackages';
+import SeoPage from './pages/SeoPage';
+import PackageDetail from './pages/PackageDetailPage';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -188,6 +190,35 @@ function App() {
             <>
               <PageTitle title="All Packages | Triangle India Tour" />
               <AllTourPackages />
+            </>
+          }
+        />
+        <Route
+          path="/manage-seo"
+          element={
+            <>
+              <PageTitle title="SEO Mangement | Triangle India Tour" />
+              <SeoPage />
+            </>
+          }
+        />
+
+        <Route
+          path="/tour-package/:id"
+          element={
+            <>
+              <PageTitle title="Tour package | Triangle India Tour" />
+              <PackageDetail />
+            </>
+          }
+        />
+        <Route
+          index
+          path="*"
+          element={
+            <>
+              <PageTitle title="eCommerce Dashboard | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+              <ECommerce />
             </>
           }
         />

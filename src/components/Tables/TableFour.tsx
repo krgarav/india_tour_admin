@@ -18,7 +18,6 @@ const TableFour = () => {
             'Content-Type': 'application/json',
           },
         });
-
         const tours = response.data.data; // assuming your data structure
         console.log('Tours fetched successfully:', tours);
 
@@ -64,7 +63,6 @@ const TableFour = () => {
           },
         });
         console.log('Tour deleted successfully:', response.data);
-
         toast.success('Tour Deleted Successfully');
         setTours(tours.filter((tour) => tour.id !== id));
       } else {
@@ -78,10 +76,6 @@ const TableFour = () => {
   const editHandler = (tourId: Number) => {
     navigate(`/tour-detail/${tourId}`);
   };
-
-  // const allTours = tours.map((item)=>{
-  //   return(
-  // })
 
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
@@ -111,7 +105,6 @@ const TableFour = () => {
                       (item) => item.packageTitle,
                     )
                   : ['No Package Involved'];
-              console.log(packagesItem);
               return (
                 <tr key={key}>
                   <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
