@@ -30,11 +30,7 @@ const PackageDetail = () => {
   useEffect(() => {
     const fetchTourDetail = async () => {
       try {
-        const response = await axios.get(`${address}/get/tourpackage/${id}`, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
+        const response = await axios.get(`${address}/get/tourpackage/${id}`);
         const options = response.data.tours.map((item: Object) => ({
           value: item.id,
           label: item.tourTitle,
@@ -97,7 +93,7 @@ const PackageDetail = () => {
 
       // Make a POST request to your backend endpoint
       const response = await axios.post(
-        `${address}/createtourpackage`,
+        `${address}/edit/tourpackage/${id}`,
         formData,
         {
           headers: {
@@ -220,7 +216,7 @@ const PackageDetail = () => {
                     />
                   </svg>
                 </span>
-                Create Tour Package
+                Edit Tour Package
               </button>
             </div>
           </div>

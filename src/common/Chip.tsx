@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Chip = ({ label, onDelete }) => {
+const Chip = ({ label, onDelete,cross }) => {
   return (
     <div className="flex items-center bg-gray-200 text-gray-800 text-sm font-medium mr-2 mb-2 px-3 py-1 rounded-full border  border-rose-100">
       {label}

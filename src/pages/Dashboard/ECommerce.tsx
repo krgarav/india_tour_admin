@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import CardDataStats from '../../components/CardDataStats';
 import ChartOne from '../../components/Charts/ChartOne';
 import ChartThree from '../../components/Charts/ChartThree';
@@ -7,12 +7,297 @@ import ChatCard from '../../components/Chat/ChatCard';
 import MapOne from '../../components/Maps/MapOne';
 import TableOne from '../../components/Tables/TableOne';
 import DefaultLayout from '../../layout/DefaultLayout';
-
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import { MultiSelect } from 'react-multi-select-component';
+import Chip from '../../common/Chip';
+import Spinner from '../../common/spinner/spinner';
+const address = import.meta.env.VITE_API_ADDRESS;
 const ECommerce: React.FC = () => {
+  const [options, setOptions] = useState([]);
+  const [selected, setSelected] = useState([]);
+  const [includedPackages, setIncludedPackages] = useState([]);
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    const loadOption = async () => {
+      try {
+        const response = await axios.get(`${address}/get/tourpackages`, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        const response2 = await axios.get(`${address}/fetchhomepagesection`, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        const tourResponse = response2.data?.tourPackage;
+        const itemSelected = tourResponse?.map((item) => item.packageTitle);
+
+        setIncludedPackages(itemSelected);
+
+        const tourPackages = response.data.allPackageTours;
+
+        const options = tourPackages.map((item: Object) => ({
+          value: item.id,
+          label: item.packageTitle,
+        }));
+        setOptions(options);
+      } catch (error) {
+        console.error('Error loading options:', error);
+      }
+    };
+    loadOption();
+  }, [loading]);
+  const handleChange = (selectedOptions) => {
+    const selectedValues = selectedOptions.map((option) => option.value);
+    setSelected(selectedValues);
+  };
+  const handleSubmit = async () => {
+    if (selected.length === 0) {
+      const response = window.confirm(
+        'Are you sure to remove all the packages from the homepage?',
+      );
+      if (!response) {
+        return;
+      }
+    }
+
+    setLoading(true);
+
+    try {
+      const tourPackageIdArray = selected;
+      const notSelected = options
+        .filter((item) => !selected.includes(item.value))
+        .map((item) => item.value);
+
+      if (selected.length > 0) {
+        await axios.post(`${address}/addhomepagesection`, tourPackageIdArray);
+      }
+
+      if (notSelected.length > 0) {
+        await axios.post(`${address}/removehomepagesection`, notSelected);
+      }
+    } catch (error) {
+      console.error('Error occurred on adding packages: ', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const IncludedPackages = (includedPackages || []).map((chip, index) => (
+    <Chip key={index} label={chip} />
+  ));
   return (
     <DefaultLayout>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
-        <CardDataStats title="Total views" total="$3.456K" rate="0.43%" levelUp>
+      <div className="">
+        <div className="grid grid-cols-1 ">
+          <div className="flex flex-col gap-9">
+            {/* <!-- Create Input Fields --> */}
+            <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+              <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+                <h3 className="font-medium text-black dark:text-white">
+                  Home Page Layout
+                </h3>
+              </div>
+              <div className="flex flex-col gap-5.5 p-6.5">
+                <label className="mb-3 block text-black dark:text-white">
+                  Tour Packages Displayed In Homepage
+                </label>
+                {/* className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary" */}
+                <div className="flex flex-wrap mb-4  w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ">
+                  {IncludedPackages.length > 0
+                    ? IncludedPackages
+                    : 'No Tours added'}
+
+                  {/* {includedPackages.map((chip, index) => (
+                    <Chip key={index} label={chip} />
+                  ))} */}
+                </div>
+              </div>
+              <div className="flex flex-col gap-5.5 p-6.5">
+                <label className="mb-3 block text-black dark:text-white">
+                  Select Tour Packages To Display In Homepage
+                </label>
+                <MultiSelect
+                  className="mb-3 block text-sm font-medium text-black  border border-stroke py-2 pl-3 pr-3 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input"
+                  options={options}
+                  value={options.filter((option) =>
+                    selected.includes(option.value),
+                  )}
+                  onChange={handleChange}
+                  labelledBy="Select"
+                />
+
+                {/* <SelectState /> */}
+                {/* <div>
+                <label className="mb-3 block text-black dark:text-white">
+                  Active Input
+                </label>
+                <input
+                  type="text"
+                  placeholder="Active Input"
+                  className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
+                />
+              </div>
+
+              <div>
+                <label className="mb-3 block font-medium text-black dark:text-white">
+                  Disabled label
+                </label>
+                <input
+                  type="text"
+                  placeholder="Disabled label"
+                  disabled
+                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary dark:disabled:bg-black"
+                />
+              </div> */}
+                <button
+                  // to="#"
+                  className="inline-flex items-center justify-center gap-2.5 bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
+                  onClick={handleSubmit}
+                >
+                  <span></span>
+                  {loading ? <Spinner /> : 'Set Layout'}
+                </button>
+              </div>
+            </div>
+
+            {/* <!-- Toggle switch input --> */}
+            {/* <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+            <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+              <h3 className="font-medium text-black dark:text-white">
+                Toggle switch input
+              </h3>
+            </div>
+            <div className="flex flex-col gap-5.5 p-6.5">
+              <SwitcherOne />
+              <SwitcherTwo />
+              <SwitcherThree />
+              <SwitcherFour />
+            </div>
+          </div> */}
+
+            {/* <!-- Time and date --> */}
+            {/* <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+            <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+              <h3 className="font-medium text-black dark:text-white">
+                Time and date
+              </h3>
+            </div>
+            <div className="flex flex-col gap-5.5 p-6.5">
+              <DatePickerOne />
+              <DatePickerTwo />
+            </div>
+          </div> */}
+
+            {/* <!-- File upload --> */}
+            {/* <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+            <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+              <h3 className="font-medium text-black dark:text-white">
+                File upload
+              </h3>
+            </div>
+            <div className="flex flex-col gap-5.5 p-6.5">
+              <div>
+                <label className="mb-3 block text-black dark:text-white">
+                  Attach file
+                </label>
+                <input
+                  type="file"
+                  className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
+                />
+              </div>
+
+              <div>
+                <label className="mb-3 block text-black dark:text-white">
+                  Attach file
+                </label>
+                <input
+                  type="file"
+                  className="w-full rounded-md border border-stroke p-3 outline-none transition file:mr-4 file:rounded file:border-[0.5px] file:border-stroke file:bg-[#EEEEEE] file:py-1 file:px-2.5 file:text-sm focus:border-primary file:focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-strokedark dark:file:bg-white/30 dark:file:text-white"
+                />
+              </div>
+            </div>
+          </div> */}
+          </div>
+
+          <div className="flex flex-col gap-9">
+            {/* <!-- Textarea Fields --> */}
+            {/* <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+            <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+              <h3 className="font-medium text-black dark:text-white">
+                Textarea Fields
+              </h3>
+            </div>
+            <div className="flex flex-col gap-5.5 p-6.5">
+              <div>
+                <label className="mb-3 block text-black dark:text-white">
+                  Default textarea
+                </label>
+                <textarea
+                  rows={6}
+                  placeholder="Default textarea"
+                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                ></textarea>
+              </div>
+
+              <div>
+                <label className="mb-3 block text-black dark:text-white">
+                  Active textarea
+                </label>
+                <textarea
+                  rows={6}
+                  placeholder="Active textarea"
+                  className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
+                ></textarea>
+              </div>
+
+              <div>
+                <label className="mb-3 block text-black dark:text-white">
+                  Disabled textarea
+                </label>
+                <textarea
+                  rows={6}
+                  disabled
+                  placeholder="Disabled textarea"
+                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary dark:disabled:bg-black"
+                ></textarea>
+              </div>
+            </div>
+          </div> */}
+
+            {/* <!-- Checkbox and radio --> */}
+            {/* <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+            <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+              <h3 className="font-medium text-black dark:text-white">
+                Checkbox and radio
+              </h3>
+            </div>
+            <div className="flex flex-col gap-5.5 p-6.5">
+              <CheckboxOne />
+              <CheckboxTwo />
+              <CheckboxThree />
+              <CheckboxFour />
+              <CheckboxFive />
+            </div>
+          </div> */}
+
+            {/* <!-- Select input --> */}
+            {/* <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+            <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+              <h3 className="font-medium text-black dark:text-white">
+                Select input
+              </h3>
+            </div>
+            <div className="flex flex-col gap-5.5 p-6.5">
+              <SelectGroupTwo />
+              <MultiSelect id="multiSelect" />
+            </div>
+          </div> */}
+          </div>
+        </div>
+        {/* <CardDataStats title="Total views" total="$3.456K" rate="0.43%" levelUp>
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -95,10 +380,10 @@ const ECommerce: React.FC = () => {
               fill=""
             />
           </svg>
-        </CardDataStats>
+        </CardDataStats> */}
       </div>
 
-      <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
+      {/* <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
         <ChartOne />
         <ChartTwo />
         <ChartThree />
@@ -107,7 +392,7 @@ const ECommerce: React.FC = () => {
           <TableOne />
         </div>
         <ChatCard />
-      </div>
+      </div> */}
     </DefaultLayout>
   );
 };

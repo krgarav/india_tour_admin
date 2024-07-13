@@ -114,9 +114,9 @@ const TableFour = () => {
                     <p className="text-sm">₹{packageItem.tourPrice}/-</p>
                   </td>
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark w-[55%]">
-                    <p className="text-black dark:text-white">
-                      <TextBoxes strings={packagesItem} />
-                    </p>
+                    {/* <p className="text-black dark:text-white"> */}
+                    <TextBoxes strings={packagesItem} />
+                    {/* </p> */}
                   </td>
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                     <p

@@ -77,7 +77,6 @@ const TourPackageTable = () => {
     navigate(`/tour-package/${tourId}`);
   };
 
-
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <div className="max-w-full overflow-x-auto">
@@ -100,10 +99,15 @@ const TourPackageTable = () => {
           </thead>
           <tbody>
             {tours.map((packageItem, key) => {
+              // console.log(packageItem.packages.tours.length);
               const packagesItem =
-                packageItem?.packages && !Array.isArray(packageItem.packages)
+                packageItem?.packages?.tours.length > 0
                   ? packageItem.packages.tours.map((item) => item.tourTitle)
                   : ['No Tours Added'];
+              // const packagesItem =
+              //   packageItem?.packages && !Array.isArray(packageItem.packages)
+              //     ? packageItem.packages.tours.map((item) => item.tourTitle)
+              //     : ['No Tours Added'];
               return (
                 <tr key={key}>
                   <td className=" w-[15%] border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
@@ -112,9 +116,9 @@ const TourPackageTable = () => {
                     </h3>
                   </td>
                   <td className=" w-[75%] border-b border-[#eee] py-5 px-4 dark:border-strokedark ">
-                    <p className="text-black dark:text-white">
-                      <TextBoxes strings={packagesItem} />
-                    </p>
+                    {/* <p className="text-black dark:text-white"> */}
+                    <TextBoxes strings={packagesItem} />
+                    {/* </p> */}
                   </td>
                   {/* <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                     <p
