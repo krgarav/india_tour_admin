@@ -26,16 +26,34 @@ const PackageDetail = () => {
   const [backgroundImage, setBackgroundImage] = useState<String>('');
   const [selected, setSelected] = useState([]);
   const { id } = useParams();
-
+console.log(selected)
   useEffect(() => {
-    const fetchTourDetail = async () => {
+    const loadOption = async () => {
       try {
-        const response = await axios.get(`${address}/get/tourpackage/${id}`);
-        const options = response.data.tours.map((item: Object) => ({
+        const response = await axios.get(`${address}/tours`, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        // console.log(response);
+
+        const options = response.data.data.map((item: Object) => ({
           value: item.id,
           label: item.tourTitle,
         }));
         setOptions(options);
+      } catch (error) {
+        console.error('Error loading options:', error);
+      }
+    };
+    loadOption();
+  }, []);
+  useEffect(() => {
+    const fetchTourDetail = async () => {
+      try {
+        const response = await axios.get(`${address}/get/tourpackage/${id}`);
+        const options = response.data.tours.map((item: Object) => (item.id));
+        setSelected(options);
 
         const data = response.data;
         const packageDetails = data?.packageDetails[0].packageTitle;
@@ -50,6 +68,7 @@ const PackageDetail = () => {
 
     fetchTourDetail();
   }, [id]);
+
   //   useEffect(() => {
   //     const loadOption = async () => {
   //       try {
@@ -216,7 +235,7 @@ const PackageDetail = () => {
                     />
                   </svg>
                 </span>
-                Edit Tour Package
+                Update Tour Package
               </button>
             </div>
           </div>

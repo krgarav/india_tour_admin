@@ -1,23 +1,15 @@
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
-import CheckboxFive from '../components/Checkboxes/CheckboxFive';
-import CheckboxFour from '../components/Checkboxes/CheckboxFour';
-import CheckboxOne from '../components/Checkboxes/CheckboxOne';
-import CheckboxThree from '../components/Checkboxes/CheckboxThree';
-import CheckboxTwo from '../components/Checkboxes/CheckboxTwo';
-import SwitcherFour from '../components/Switchers/SwitcherFour';
-import SwitcherOne from '../components/Switchers/SwitcherOne';
-import SwitcherThree from '../components/Switchers/SwitcherThree';
-import SwitcherTwo from '../components/Switchers/SwitcherTwo';
+
 import DefaultLayout from '../layout/DefaultLayout';
 import DatePickerOne from '../components/Forms/DatePicker/DatePickerOne';
 import DatePickerTwo from '../components/Forms/DatePicker/DatePickerTwo';
 import SelectGroupTwo from '../components/Forms/SelectGroup/SelectGroupTwo';
 import MultiSelect from '../components/Forms/MultiSelect';
 import SelectState from '../components/Forms/SelectGroup/SelectState';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const TourDetail = () => {
   const [tourTitle, setTourTitle] = useState('');
@@ -47,6 +39,7 @@ const TourDetail = () => {
     'https://picsum.photos/200',
   ]);
   const [itinerary, setItinerary] = useState([{ day: 1, title: '', desc: '' }]);
+  const navigate = useNavigate();
   const { id } = useParams();
 
   useEffect(() => {
@@ -184,6 +177,7 @@ const TourDetail = () => {
       });
       toast.success(`${tourTitle} Updated`);
       resetForm();
+      navigate('/tables');
       console.log('Tour updated successfully:', response.data);
       // Handle any success logic here
     } catch (error) {
