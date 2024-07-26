@@ -25,8 +25,9 @@ const PackageDetail = () => {
   const [title, setTitle] = useState<String>('');
   const [backgroundImage, setBackgroundImage] = useState<String>('');
   const [selected, setSelected] = useState([]);
+  const [titleImage, setTitleImage] = useState('');
   const { id } = useParams();
-console.log(selected)
+  console.log(selected);
   useEffect(() => {
     const loadOption = async () => {
       try {
@@ -52,13 +53,15 @@ console.log(selected)
     const fetchTourDetail = async () => {
       try {
         const response = await axios.get(`${address}/get/tourpackage/${id}`);
-        const options = response.data.tours.map((item: Object) => (item.id));
+        const options = response.data.tours.map((item: Object) => item.id);
         setSelected(options);
 
         const data = response.data;
+        console.log(data)
         const packageDetails = data?.packageDetails[0].packageTitle;
-
+        const imageDetail = data?.packageDetails[0].backgroundImage;
         setTitle(packageDetails);
+        setTitleImage(imageDetail)
 
         console.log(data);
       } catch (error) {
@@ -174,6 +177,26 @@ console.log(selected)
                 onChange={handleChange}
                 labelledBy="Select"
               />
+              <div>
+                <label className="mb-3 block text-black dark:text-white">
+                  Attached Title Image
+                </label>
+                <div className="flex flex-wrap mt-4">
+                  <div className="relative m-2">
+                    <img
+                      src={`${address}/images/${titleImage}`}
+                      alt={`Thumbnail `}
+                      className="w-24 h-24 object-cover rounded-lg shadow-md"
+                    />
+                    <button
+                      // onClick={() => handleImageDelete()}
+                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                </div>
+              </div>
               <div>
                 <label className="mb-3 block text-black dark:text-white">
                   Attach Background Image
