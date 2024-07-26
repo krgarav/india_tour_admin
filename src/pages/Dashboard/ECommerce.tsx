@@ -18,6 +18,8 @@ const ECommerce: React.FC = () => {
   const [selected, setSelected] = useState([]);
   const [includedPackages, setIncludedPackages] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [itinerary, setItinerary] = useState([{ day: 1, title: '', desc: '' }]);
+
   useEffect(() => {
     const loadOption = async () => {
       try {
@@ -84,7 +86,23 @@ const ECommerce: React.FC = () => {
       setLoading(false);
     }
   };
-
+  const addDay = () => {
+    const newDay = {
+      day: itinerary.length + 1,
+      title: '',
+      desc: '',
+    };
+    setItinerary([...itinerary, newDay]);
+  };
+  const removeDay = (index: any) => {
+    const updatedItinerary = [...itinerary];
+    updatedItinerary.splice(index, 1);
+    // Update day numbers after deletion
+    updatedItinerary.forEach((item, idx) => {
+      item.day = idx + 1;
+    });
+    setItinerary(updatedItinerary);
+  };
   const IncludedPackages = (includedPackages || []).map((chip, index) => (
     <Chip key={index} label={chip} />
   ));
@@ -153,7 +171,6 @@ const ECommerce: React.FC = () => {
                 />
               </div> */}
                 <button
-                  // to="#"
                   className="inline-flex items-center justify-center gap-2.5 bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
                   onClick={handleSubmit}
                 >
@@ -162,7 +179,88 @@ const ECommerce: React.FC = () => {
                 </button>
               </div>
             </div>
+            <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+              
+            <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+              <label className="mb-3 block text-black dark:text-white">
+                Add images to be displayed on the homepage Slider
+              </label>
+              <form
+                onSubmit={handleSubmit}
+                // className="grid grid-cols-1 sm:grid-cols-2 gap-6"
+              >
+                {itinerary.map((day, index) => (
+                  <div key={index} className="mb-4 p-4 border rounded">
+                    <h3 className="text-lg font-medium mb-2">
+                      Slider {day.day}
+                    </h3>
+                    <div className="mb-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Mini Title:
+                      </label>
+                      <input
+                        type="text"
+                        className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                        value={day.title}
+                        // onChange={(e) =>
+                        //   handleChange(index, 'title', e.target.value)
+                        // }
+                      />
+                    </div>
+                    <div className="mb-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Main Title:
+                      </label>
+                      <textarea
+                        className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                        value={day.desc}
+                        // onChange={(e) =>
+                        //   handleChange(index, 'desc', e.target.value)
+                        // }
+                      />
+                    </div>
 
+                    <div className="mb-2">
+                      <label className="mb-3 block text-black dark:text-white">
+                        Attach Title Image
+                      </label>
+                      <input
+                        type="file"
+                        className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                          if (e.target.files && e.target.files.length > 0) {
+                            // setTitleImage(e.target.files[0]); // Store the file object in state
+                          }
+                        }}
+                      />
+                    </div>
+                    {index >= 1 && (
+                      <button
+                        type="button"
+                        className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
+                        onClick={() => removeDay(index)}
+                      >
+                        Remove Day
+                      </button>
+                    )}
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 mr-2"
+                  onClick={addDay}
+                >
+                  Add Day
+                </button>
+                {/* <button
+                  type="submit"
+                  className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
+                >
+                  Submit Itinerary
+                </button> */}
+              </form>
+              </div>
+            </div>
             {/* <!-- Toggle switch input --> */}
             {/* <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
