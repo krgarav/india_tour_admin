@@ -19,6 +19,8 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { MultiSelect } from 'react-multi-select-component';
 import { useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import Buttons from './UiElements/Buttons';
 const address = import.meta.env.VITE_API_ADDRESS;
 const PackageDetail = () => {
   const [options, setOptions] = useState<File[]>([]);
@@ -26,8 +28,9 @@ const PackageDetail = () => {
   const [backgroundImage, setBackgroundImage] = useState<String>('');
   const [selected, setSelected] = useState([]);
   const [titleImage, setTitleImage] = useState('');
+  const [newImage, setNewImage] = useState(false);
   const { id } = useParams();
-  console.log(selected);
+
   useEffect(() => {
     const loadOption = async () => {
       try {
@@ -57,11 +60,11 @@ const PackageDetail = () => {
         setSelected(options);
 
         const data = response.data;
-        console.log(data)
+        console.log(data);
         const packageDetails = data?.packageDetails[0].packageTitle;
         const imageDetail = data?.packageDetails[0].backgroundImage;
         setTitle(packageDetails);
-        setTitleImage(imageDetail)
+        setTitleImage(imageDetail);
 
         console.log(data);
       } catch (error) {
@@ -177,6 +180,7 @@ const PackageDetail = () => {
                 onChange={handleChange}
                 labelledBy="Select"
               />
+
               <div>
                 <label className="mb-3 block text-black dark:text-white">
                   Attached Title Image
@@ -197,20 +201,27 @@ const PackageDetail = () => {
                   </div>
                 </div>
               </div>
-              <div>
-                <label className="mb-3 block text-black dark:text-white">
-                  Attach Background Image
-                </label>
-                <input
-                  type="file"
-                  className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    if (e.target.files && e.target.files.length > 0) {
-                      setBackgroundImage(e.target.files[0]); // Store the file object in state
-                    }
-                  }}
-                />
-              </div>
+              {newImage && (
+                <div>
+                  <label className="mb-3 block text-black dark:text-white">
+                    Attach Background Image
+                  </label>
+                  <input
+                    type="file"
+                    className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      if (e.target.files && e.target.files.length > 0) {
+                        setBackgroundImage(e.target.files[0]); // Store the file object in state
+                      }
+                    }}
+                  />
+                </div>
+              )}
+              {!newImage && (
+                <button onClick={()=>{setNewImage(true)}} className="inline-flex items-center justify-center rounded-md bg-meta-3 py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10">
+                  Choose Another Image
+                </button>
+              )}
               {/* <SelectState /> */}
               {/* <div>
                 <label className="mb-3 block text-black dark:text-white">
@@ -235,7 +246,6 @@ const PackageDetail = () => {
                 />
               </div> */}
               <button
-                // to="#"
                 className="inline-flex items-center justify-center gap-2.5 bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
                 onClick={handleClick}
               >
