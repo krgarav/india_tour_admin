@@ -18,10 +18,28 @@ const ECommerce: React.FC = () => {
   const [selected, setSelected] = useState([]);
   const [includedPackages, setIncludedPackages] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [itinerary, setItinerary] = useState([{ day: 1, title: '', img: '' }]);
+  const [itinerary, setItinerary] = useState([
+    { minititle: '', maintitle: '', img: null },
+  ]);
   const [titleImage, setTitleImage] = useState();
   const [mainTitle, setMainTitle] = useState();
   const [miniTitile, setMiniTitle] = useState();
+
+  useEffect(() => {
+    const loadOption = async () => {
+      try {
+        const response = await axios.get(`${address}/getSliderData`, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        console.log(response);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    loadOption();
+  }, []);
   useEffect(() => {
     const loadOption = async () => {
       try {
@@ -56,9 +74,18 @@ const ECommerce: React.FC = () => {
 
   const handleChange1 = (index, field, value) => {
     const updatedItinerary = [...itinerary];
-    updatedItinerary[index][field] = value;
+    if (field === 'img') {
+      // For file input, handle files differently
+      if (value.target.files && value.target.files.length > 0) {
+        updatedItinerary[index][field] = value.target.files[0];
+      }
+    } else {
+      // For text and textarea inputs
+      updatedItinerary[index][field] = value;
+    }
     setItinerary(updatedItinerary);
   };
+
   const handleChange = (selectedOptions) => {
     const selectedValues = selectedOptions.map((option) => option.value);
     setSelected(selectedValues);
@@ -95,40 +122,33 @@ const ECommerce: React.FC = () => {
     }
   };
   const addDay = () => {
-    const newDay = {
-      day: itinerary.length + 1,
-      title: '',
-      desc: '',
-    };
-    setItinerary([...itinerary, newDay]);
+    setItinerary([...itinerary, { minititle: '', maintitle: '', img: null }]);
   };
-  const removeDay = (index: any) => {
-    const updatedItinerary = [...itinerary];
-    updatedItinerary.splice(index, 1);
-    // Update day numbers after deletion
-    updatedItinerary.forEach((item, idx) => {
-      item.day = idx + 1;
-    });
+  const removeDay = (index) => {
+    const updatedItinerary = itinerary.filter((_, i) => i !== index);
     setItinerary(updatedItinerary);
   };
 
   const saveHandler = async (index) => {
     console.log(index);
     console.log(itinerary);
-    // try {
-    //   const formData = new FormData();
-    //   formData.append('Title', miniTitile);
-    //   formData.append('subTitle', mainTitle);
-    //   formData.append('sliderImg', titleImage);
+    const miniTitile = itinerary[index].minititle;
+    const mainTitle = itinerary[index].maintitle;
+    const titleImage = itinerary[index].img;
+    try {
+      const formData = new FormData();
+      formData.append('Title', miniTitile);
+      formData.append('subTitle', mainTitle);
+      formData.append('sliderImg', titleImage);
 
-    //   const res = await axios.post(`${address}/addSliderData`, formData);
-    //   console.log(res);
-    //   if (res.data) {
-    //     toast.success(res.data.msg);
-    //   }
-    // } catch (error) {
-    //   console.log(error);
-    // }
+      const res = await axios.post(`${address}/addSliderData`, formData);
+      console.log(res);
+      if (res.data) {
+        toast.success(res.data.msg);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
   const IncludedPackages = (includedPackages || []).map((chip, index) => (
     <Chip key={index} label={chip} />
@@ -218,7 +238,7 @@ const ECommerce: React.FC = () => {
                   {itinerary.map((day, index) => (
                     <div key={index} className="mb-4 p-4 border rounded">
                       <h3 className="text-lg font-medium mb-2">
-                        Slider {day.day}
+                        Slider {index + 1}
                       </h3>
                       <div className="mb-2">
                         <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -227,9 +247,9 @@ const ECommerce: React.FC = () => {
                         <input
                           type="text"
                           className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                          value={day.title}
+                          value={day.minititle}
                           onChange={(e) =>
-                            handleChange1(index, 'title', e.target.value)
+                            handleChange1(index, 'minititle', e.target.value)
                           }
                         />
                       </div>
@@ -239,9 +259,9 @@ const ECommerce: React.FC = () => {
                         </label>
                         <textarea
                           className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                          value={day.title}
+                          value={day.maintitle}
                           onChange={(e) =>
-                            handleChange1(index, 'title', e.target.value)
+                            handleChange1(index, 'maintitle', e.target.value)
                           }
                         />
                       </div>
@@ -253,19 +273,7 @@ const ECommerce: React.FC = () => {
                         <input
                           type="file"
                           className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
-                          value={day.title}
-                          onChange={(e) => {
-                            if (e.target.files && e.target.files.length > 0) {
-                              handleChange1(index, 'title', e.target.files[0]);
-                            }
-                          }}
-                          onChange={(
-                            e: React.ChangeEvent<HTMLInputElement>,
-                          ) => {
-                            if (e.target.files && e.target.files.length > 0) {
-                              setTitleImage(e.target.files[0]); // Store the file object in state
-                            }
-                          }}
+                          onChange={(e) => handleChange1(index, 'img', e)}
                         />
                       </div>
 
