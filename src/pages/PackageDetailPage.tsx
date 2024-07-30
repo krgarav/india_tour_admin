@@ -218,7 +218,12 @@ const PackageDetail = () => {
                 </div>
               )}
               {!newImage && (
-                <button onClick={()=>{setNewImage(true)}} className="inline-flex items-center justify-center rounded-md bg-meta-3 py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10">
+                <button
+                  onClick={() => {
+                    setNewImage(true);
+                  }}
+                  className="inline-flex items-center justify-center rounded-md bg-meta-3 py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
+                >
                   Choose Another Image
                 </button>
               )}

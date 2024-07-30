@@ -24,7 +24,9 @@ const ECommerce: React.FC = () => {
   const [titleImage, setTitleImage] = useState();
   const [mainTitle, setMainTitle] = useState();
   const [miniTitile, setMiniTitle] = useState();
-
+  const [savedSlider, setSavedSlider] = useState([]);
+  const [save, setSave] = useState(false);
+  console.log(savedSlider);
   useEffect(() => {
     const loadOption = async () => {
       try {
@@ -33,13 +35,14 @@ const ECommerce: React.FC = () => {
             'Content-Type': 'multipart/form-data',
           },
         });
-        console.log(response);
+        const data = response.data;
+        setSavedSlider(data.data);
       } catch (err) {
         console.log(err);
       }
     };
     loadOption();
-  }, []);
+  }, [save]);
   useEffect(() => {
     const loadOption = async () => {
       try {
@@ -85,7 +88,17 @@ const ECommerce: React.FC = () => {
     }
     setItinerary(updatedItinerary);
   };
+  const handleChange3 = (index, field, value) => {
+    const updatedSlider = [...savedSlider];
+    updatedSlider[index][field] = value;
+    setSavedSlider(updatedSlider);
+  };
 
+  const handleChange4 = (index, field, value) => {
+    const updatedSlider = [...savedSlider];
+    updatedSlider[index][field] = value;
+    setSavedSlider(updatedSlider);
+  };
   const handleChange = (selectedOptions) => {
     const selectedValues = selectedOptions.map((option) => option.value);
     setSelected(selectedValues);
@@ -130,11 +143,13 @@ const ECommerce: React.FC = () => {
   };
 
   const saveHandler = async (index) => {
-    console.log(index);
-    console.log(itinerary);
     const miniTitile = itinerary[index].minititle;
     const mainTitle = itinerary[index].maintitle;
     const titleImage = itinerary[index].img;
+    if (!miniTitile || !mainTitle || !titleImage) {
+      alert('Please fill all the fields');
+      return;
+    }
     try {
       const formData = new FormData();
       formData.append('Title', miniTitile);
@@ -142,9 +157,57 @@ const ECommerce: React.FC = () => {
       formData.append('sliderImg', titleImage);
 
       const res = await axios.post(`${address}/addSliderData`, formData);
-      console.log(res);
       if (res.data) {
         toast.success(res.data.msg);
+        setSave((prev) => !prev);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const deleteHandler = async (id) => {
+    const result = window.confirm('Are you sure you want to delete data?');
+    if (!result) {
+      return;
+    }
+    try {
+      const res = await axios.delete(`${address}/deleteSliderData/${id}`);
+      if (res.data) {
+        toast.success(res.data.msg);
+        setSave((prev) => !prev);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error);
+    }
+  };
+  const urlToFile = async (url, filename) => {
+    const response = await fetch(url);
+    const buffer = await response.arrayBuffer();
+    const mimeType = response.headers.get('content-type');
+    return new File([buffer], filename, { type: mimeType });
+  };
+  const editHandler = async (id, index) => {
+    const miniTitile = savedSlider[index].Title;
+    const mainTitle = savedSlider[index].subTitle;
+    const titleImage = savedSlider[index].imgPath;
+    // Convert the image URL to a File object
+    console.log(miniTitile);
+    const file = await urlToFile(
+      `${address}/sliderImg/${titleImage}`,
+      `image_${index}.jpg`,
+    );
+
+    try {
+      const formData = new FormData();
+      formData.append('Title', miniTitile);
+      formData.append('subTitle', mainTitle);
+      formData.append('sliderImg', file);
+      formData.append('id', id);
+      const res = await axios.put(`${address}/editSliderData/`, formData);
+      if (res.data) {
+        toast.success(res.data.msg);
+        setSave((prev) => !prev);
       }
     } catch (error) {
       console.log(error);
@@ -226,6 +289,77 @@ const ECommerce: React.FC = () => {
                 </button>
               </div>
             </div>
+
+            {/* Slider image present currently */}
+            <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+              <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+                <label className="mb-3 block text-black dark:text-white">
+                  Slider images present currently
+                </label>
+                <form
+                  onSubmit={handleSubmit}
+                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                >
+                  {savedSlider.map((day, index) => (
+                    <div key={index} className="mb-4 p-4 border rounded">
+                      <h3 className="text-lg font-medium mb-2">
+                        Slider {index + 1}
+                      </h3>
+                      <div className="mb-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Mini Title:
+                        </label>
+                        <input
+                          type="text"
+                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                          value={day.Title}
+                          onChange={(e) =>
+                            handleChange3(index, 'Title', e.target.value)
+                          }
+                        />
+                      </div>
+                      <div className="mb-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Main Title:
+                        </label>
+                        <textarea
+                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                          value={day.subTitle}
+                          onChange={(e) =>
+                            handleChange4(index, 'subTitle', e.target.value)
+                          }
+                        />
+                      </div>
+                      <div className="mb-2">
+                        <label className="mb-3 block text-black dark:text-white">
+                          Title Image
+                        </label>
+                        <img
+                          src={`${address}/sliderImg/${day.imgPath}`}
+                          alt={`Thumbnail ${index}`}
+                          className="w-24 h-24 object-cover rounded-lg shadow-md"
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        className="bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600 mr-2"
+                        onClick={() => editHandler(day.id, index)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
+                        onClick={() => deleteHandler(day.id)}
+                      >
+                        Remove Slider
+                      </button>
+                    </div>
+                  ))}
+                </form>
+              </div>
+            </div>
+
             <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
               <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
                 <label className="mb-3 block text-black dark:text-white">
