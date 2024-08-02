@@ -39,6 +39,7 @@ const CreateTour = () => {
   const [fooding, setFooding] = useState<boolean>(false);
   const [otherServices, setOtherServices] = useState<string>('');
   const [tourLocation, setTourLocation] = useState<string>('');
+  const [city, setCity] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const address = import.meta.env.VITE_API_ADDRESS;
 
@@ -108,7 +109,7 @@ const CreateTour = () => {
       formData.append('durationDay', tourDayDuration);
       formData.append('durationNight', tourNightDuration);
       formData.append('state', tourLocation);
-      formData.append('city', 'Agra');
+      formData.append('city', city);
 
       formData.append('deals', topDeal.toString());
       formData.append('rating', rating);
@@ -268,6 +269,9 @@ const CreateTour = () => {
                     }
                   }}
                 />
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Image Size : 1024px(width) × 275px(height)
+                </p>
               </div>
               <div>
                 <label className="mb-3 block text-black dark:text-white">
@@ -293,14 +297,41 @@ const CreateTour = () => {
                   }}
                 />
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Please attach at least 5 images.
+                  Please attach at least 5 images. Image Size : 500px(width) ×
+                  500px(height)
                 </p>
               </div>
               <div className="grid sm:grid-cols-2 md:flex md:flex-row">
                 <div className="w-full md:w-1/2 md:pr-2">
                   <SelectState onChange={locationHandler} />
                 </div>
+
                 <div className="w-full md:w-1/2 md:pr-2">
+                  <label className="mb-3 block text-black dark:text-white">
+                    Enter City
+                  </label>
+                  {/* <select
+                    onChange={(e) => {
+                      setTopDeal(e.target.value === '1');
+                    }}
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    value={topDeal ? '1' : '0'} // Bind the state value to the select element
+                  >
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
+                  </select> */}
+                  <input
+                    type="text"
+                    placeholder="Enter City Name"
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <div className="w-full md:w-full md:pr-2">
                   <label className="mb-3 block text-black dark:text-white">
                     Tour in Top Deal
                   </label>
@@ -316,7 +347,6 @@ const CreateTour = () => {
                   </select>
                 </div>
               </div>
-
               <div className="grid sm:grid-cols-2 md:flex md:flex-row">
                 <div className="w-full md:w-1/2 md:pr-2">
                   <label className="mb-3 block text-black dark:text-white">
@@ -491,7 +521,7 @@ const CreateTour = () => {
               <button
                 onClick={createTourHandler}
                 className="inline-flex items-center justify-center gap-2.5 bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
-              disabled={isLoading}
+                disabled={isLoading}
               >
                 {!isLoading ? (
                   <span className="flex items-center gap-5">

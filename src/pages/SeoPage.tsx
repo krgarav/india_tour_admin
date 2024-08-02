@@ -1,16 +1,7 @@
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
-import CheckboxFive from '../components/Checkboxes/CheckboxFive';
-import CheckboxFour from '../components/Checkboxes/CheckboxFour';
-import CheckboxOne from '../components/Checkboxes/CheckboxOne';
-import CheckboxThree from '../components/Checkboxes/CheckboxThree';
-import CheckboxTwo from '../components/Checkboxes/CheckboxTwo';
-import SwitcherFour from '../components/Switchers/SwitcherFour';
-import SwitcherOne from '../components/Switchers/SwitcherOne';
-import SwitcherThree from '../components/Switchers/SwitcherThree';
-import SwitcherTwo from '../components/Switchers/SwitcherTwo';
+
 import DefaultLayout from '../layout/DefaultLayout';
-import DatePickerOne from '../components/Forms/DatePicker/DatePickerOne';
-import DatePickerTwo from '../components/Forms/DatePicker/DatePickerTwo';
+
 import SelectGroupTwo from '../components/Forms/SelectGroup/SelectGroupTwo';
 // import MultiSelect from '../components/Forms/MultiSelect';
 import SelectState from '../components/Forms/SelectGroup/SelectState';
@@ -53,42 +44,43 @@ const SeoPage = () => {
     setSelected(selectedValues);
   };
   const handleClick = async () => {
+    toast.success('Added the Keyword');
     console.log(selected);
-    try {
-      // Create a new FormData instance for file uploads
-      const formData = new FormData();
+    // try {
+    //   // Create a new FormData instance for file uploads
+    //   const formData = new FormData();
 
-      // Append each field individually to FormData
-      formData.append('tourPackageTitle', title);
-      formData.append('toursIncluded', JSON.stringify(selected));
+    //   // Append each field individually to FormData
+    //   formData.append('tourPackageTitle', title);
+    //   formData.append('toursIncluded', JSON.stringify(selected));
 
-      // Append single image file (titleImage)
-      if (backgroundImage) {
-        formData.append('TourBGImage', backgroundImage);
-      }
+    //   // Append single image file (titleImage)
+    //   if (backgroundImage) {
+    //     formData.append('TourBGImage', backgroundImage);
+    //   }
 
-      // Make a POST request to your backend endpoint
-      const response = await axios.post(
-        `${address}/createtourpackage`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        },
-      );
-      console.log(response);
-      toast.success(`${title} Added`);
-      // resetForm();
-      console.log('Tour creation successful:', response.data);
-      // Handle any success logic here
-    } catch (error) {
-      if (error?.response?.data.message) {
-        toast.error(JSON.stringify(error?.response?.data.message));
-      }
-      console.error('Error creating tour:', error);
-      // Handle errors appropriately
-    }
+    //   // Make a POST request to your backend endpoint
+    //   const response = await axios.post(
+    //     `${address}/createtourpackage`,
+    //     formData,
+    //     {
+    //       headers: {
+    //         'Content-Type': 'multipart/form-data',
+    //       },
+    //     },
+    //   );
+    //   console.log(response);
+    //   toast.success(`${title} Added`);
+    //   // resetForm();
+    //   console.log('Tour creation successful:', response.data);
+    //   // Handle any success logic here
+    // } catch (error) {
+    //   if (error?.response?.data.message) {
+    //     toast.error(JSON.stringify(error?.response?.data.message));
+    //   }
+    //   console.error('Error creating tour:', error);
+    //   // Handle errors appropriately
+    // }
   };
   return (
     <DefaultLayout>
@@ -105,7 +97,7 @@ const SeoPage = () => {
             </div>
             <div className="flex flex-col gap-5.5 p-6.5">
               <div>
-                <SelectGroupTwo />
+                <SelectGroupTwo options={options} />
               </div>
               <div>
                 <label className="mb-3 block text-black dark:text-white">

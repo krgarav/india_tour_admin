@@ -57,17 +57,25 @@ const SelectGroupTwo: React.FC = (props) => {
           }`}
         >
           <option value="" disabled className="text-body dark:text-bodydark">
-            Select Page 
+            Select Page
           </option>
           <option value="USA" className="text-body dark:text-bodydark">
             Homepage
           </option>
-          <option value="UK" className="text-body dark:text-bodydark">
-            Golden Tour
+          <option value="USA" className="text-body dark:text-bodydark">
+            Contact Us
           </option>
-          <option value="Canada" className="text-body dark:text-bodydark">
-            Winter Tour
-          </option>
+          {props.options.map((item, index) => {
+            return (
+              <option
+                value={item.value}
+                className="text-body dark:text-bodydark"
+                key={index}
+              >
+                {item.label}
+              </option>
+            );
+          })}
         </select>
 
         <span className="absolute top-1/2 right-4 z-10 -translate-y-1/2">

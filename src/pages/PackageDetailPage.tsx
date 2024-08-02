@@ -29,6 +29,7 @@ const PackageDetail = () => {
   const [selected, setSelected] = useState([]);
   const [titleImage, setTitleImage] = useState('');
   const [newImage, setNewImage] = useState(false);
+  const [toggler, setToggler] = useState(false);
   const { id } = useParams();
 
   useEffect(() => {
@@ -73,7 +74,7 @@ const PackageDetail = () => {
     };
 
     fetchTourDetail();
-  }, [id]);
+  }, [id, toggler]);
 
   //   useEffect(() => {
   //     const loadOption = async () => {
@@ -117,7 +118,7 @@ const PackageDetail = () => {
       }
 
       // Make a POST request to your backend endpoint
-      const response = await axios.post(
+      const response = await axios.put(
         `${address}/edit/tourpackage/${id}`,
         formData,
         {
@@ -128,6 +129,7 @@ const PackageDetail = () => {
       );
       console.log(response);
       toast.success(`${title} Added`);
+      setToggler((prev) => !prev);
       // resetForm();
       console.log('Tour creation successful:', response.data);
       // Handle any success logic here
