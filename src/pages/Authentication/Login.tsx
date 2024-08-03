@@ -59,15 +59,15 @@ const Login: React.FC = () => {
         <div className="hidden w-full xl:block xl:w-1/2">
           <div className="py-17.5 px-26 text-center">
             <Link className="mb-5.5 inline-block" to="/">
-              {/* <img className="hidden dark:block" src={Logo} alt="Logo" /> */}
-              <img src="/images/logo.png" alt="Logo" />
+           
+              <img src="/images/logo.png" alt="Logo" style={{width:"100%",height:"20vh"}} />
             </Link>
 
-            <p className="2xl:px-20">
+            <p className="2xl:px-10">
               Manage your Tours and package very easily and make site faster.
             </p>
 
-            <span className="mt-15 inline-block">
+            <span className="mt-2 inline-block">
               <svg
                 width="350"
                 height="350"
