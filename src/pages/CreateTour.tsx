@@ -44,17 +44,92 @@ const CreateTour = () => {
   const address = import.meta.env.VITE_API_ADDRESS;
 
   const [itinerary, setItinerary] = useState([{ day: 1, title: '', desc: '' }]);
-
+  const [highlight, setHighlight] = useState([{ sl: 1, highlight: '' }]);
+  const [inclusion, setInclusion] = useState([{ sl: 1, inclusion: '' }]);
+  const [exclusion, setExclusion] = useState([{ sl: 1, exclusion: '' }]);
+  
   const handleChange = (index, field, value) => {
     const updatedItinerary = [...itinerary];
     updatedItinerary[index][field] = value;
     setItinerary(updatedItinerary);
+  };
+  const handleInclusionChange = (index, field, value) => {
+    const updatedInclusion = [...inclusion];
+    updatedInclusion[index][field] = value;
+    setInclusion(updatedInclusion);
+  };
+  const handleExclusionChange = (index, field, value) => {
+    const updatedExclusion = [...exclusion];
+    updatedExclusion[index][field] = value;
+    setExclusion(updatedExclusion);
+  };
+
+  const handleHighlightChange = (index, field, value) => {
+    const updatedHighlights = [...highlight];
+    updatedHighlights[index][field] = value;
+    setHighlight(updatedHighlights);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle form submission logic here, e.g., send `itinerary` state to backend
     console.log(itinerary);
+  };
+
+
+  const addHighLights = () => {
+    const newHighlight = {
+      sl: highlight.length + 1,
+      highlight: '',
+    };
+    setHighlight([...highlight, newHighlight]);
+  };
+
+  const removeInclusion = (index: any) => {
+    const updatedInclusions = [...inclusion];
+    updatedInclusions.splice(index, 1);
+    // Update day numbers after deletion
+    updatedInclusions.forEach((item, idx) => {
+      item.sl = idx + 1;
+    });
+    setInclusion(updatedInclusions);
+  };
+
+  const addInclusion = () => {
+    const newInclusion = {
+      sl: inclusion.length + 1,
+      inclusion: '',
+    };
+    setInclusion([...inclusion, newInclusion]);
+  };
+
+  const removeExclusion = (index: any) => {
+    const updatedExclusion = [...exclusion];
+    updatedExclusion.splice(index, 1);
+    // Update day numbers after deletion
+    updatedExclusion.forEach((item, idx) => {
+      item.sl = idx + 1;
+    });
+    setExclusion(updatedExclusion);
+  };
+
+
+  const addExclusion = () => {
+    const newExclusion = {
+      sl: exclusion.length + 1,
+      exclusion: '',
+    };
+    setExclusion([...exclusion, newExclusion]);
+  };
+
+  const removehighLights = (index: any) => {
+    const updatedHighlights = [...highlight];
+    updatedHighlights.splice(index, 1);
+    // Update day numbers after deletion
+    updatedHighlights.forEach((item, idx) => {
+      item.sl = idx + 1;
+    });
+    setHighlight(updatedHighlights);
   };
 
   const addDay = () => {
@@ -75,6 +150,7 @@ const CreateTour = () => {
     });
     setItinerary(updatedItinerary);
   };
+
   const resetForm = () => {
     setTourTitle('');
     setTourPrice('');
@@ -518,36 +594,36 @@ const CreateTour = () => {
                 </button> */}
               </form>
 
-              <h2 className="text-2xl font-semibold mb-4">
-                Tour Highlights
-              </h2>
+              <h2 className="text-2xl font-semibold mb-4">Tour Highlights</h2>
 
-              <form
-                onSubmit={handleSubmit}
-                // className="grid grid-cols-1 sm:grid-cols-2 gap-6"
-              >
-                {itinerary.map((day, index) => (
+              <form>
+                {highlight.map((day, index) => (
                   <div key={index} className="mb-4 p-4 border rounded">
-                    <h3 className="text-lg font-medium mb-2">Highlight {day.day}</h3>
+                    <h3 className="text-lg font-medium mb-2">
+                      Highlight {day.sl}
+                    </h3>
                     <div className="mb-2">
-                     
                       <input
                         type="text"
                         className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                        value={day.title}
+                        value={day.highlight}
                         onChange={(e) =>
-                          handleChange(index, 'title', e.target.value)
+                          handleHighlightChange(
+                            index,
+                            'highlight',
+                            e.target.value,
+                          )
                         }
                       />
                     </div>
-                 
+
                     {index >= 1 && (
                       <button
                         type="button"
                         className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
-                        onClick={() => removeDay(index)}
+                        onClick={() => removehighLights(index)}
                       >
-                        Remove Day
+                        Remove Highlight
                       </button>
                     )}
                   </div>
@@ -555,17 +631,106 @@ const CreateTour = () => {
                 <button
                   type="button"
                   className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 mr-2"
-                  onClick={addDay}
+                  onClick={addHighLights}
                 >
                   Add Highlight
                 </button>
-                {/* <button
-                  type="submit"
-                  className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
-                >
-                  Submit Itinerary
-                </button> */}
               </form>
+
+              <div className='flex flex-row'>
+                <div className="w-1/2 pr-2">
+                  <h2 className="text-2xl font-semibold mb-4">
+                    Tour Inclusion
+                  </h2>
+
+                  <form>
+                    {inclusion.map((day, index) => (
+                      <div key={index} className="mb-4 p-4 border rounded">
+                        <h3 className="text-lg font-medium mb-2">
+                          Inclusion {day.sl}
+                        </h3>
+                        <div className="mb-2">
+                          <input
+                            type="text"
+                            className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                            value={day.inclusion}
+                            onChange={(e) =>
+                              handleInclusionChange(
+                                index,
+                                'exclusion',
+                                e.target.value,
+                              )
+                            }
+                          />
+                        </div>
+
+                        {index >= 1 && (
+                          <button
+                            type="button"
+                            className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
+                            onClick={() => removeInclusion(index)}
+                          >
+                            Remove Inclusion
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                    <button
+                      type="button"
+                      className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 mr-2"
+                      onClick={addInclusion}
+                    >
+                      Add Inclusion
+                    </button>
+                  </form>
+                </div>
+                <div className="w-1/2 pr-2">
+                  <h2 className="text-2xl font-semibold mb-4">
+                    Tour Exclusion
+                  </h2>
+
+                  <form>
+                    {exclusion.map((day, index) => (
+                      <div key={index} className="mb-4 p-4 border rounded">
+                        <h3 className="text-lg font-medium mb-2">
+                          Exclusion {day.sl}
+                        </h3>
+                        <div className="mb-2">
+                          <input
+                            type="text"
+                            className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                            value={day.exclusion}
+                            onChange={(e) =>
+                              handleExclusionChange(
+                                index,
+                                'exclusion',
+                                e.target.value,
+                              )
+                            }
+                          />
+                        </div>
+
+                        {index >= 1 && (
+                          <button
+                            type="button"
+                            className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
+                            onClick={() => removeExclusion(index)}
+                          >
+                            Remove Exclusion
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                    <button
+                      type="button"
+                      className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 mr-2"
+                      onClick={addExclusion}
+                    >
+                      Add Exclusion
+                    </button>
+                  </form>
+                </div>
+              </div>
               <button
                 onClick={createTourHandler}
                 className="inline-flex items-center justify-center gap-2.5 bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
@@ -595,13 +760,10 @@ const CreateTour = () => {
                 ) : (
                   <Spinner />
                 )}
-               
               </button>
             </div>
           </div>
         </div>
-
-       
       </div>
     </DefaultLayout>
   );
