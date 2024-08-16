@@ -395,16 +395,7 @@ const CreateTour = () => {
                   <label className="mb-3 block text-black dark:text-white">
                     Enter City
                   </label>
-                  {/* <select
-                    onChange={(e) => {
-                      setTopDeal(e.target.value === '1');
-                    }}
-                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    value={topDeal ? '1' : '0'} // Bind the state value to the select element
-                  >
-                    <option value="0">No</option>
-                    <option value="1">Yes</option>
-                  </select> */}
+                 
                   <input
                     type="text"
                     placeholder="Enter City Name"
