@@ -174,6 +174,12 @@ const CreateTour = () => {
 
   const createTourHandler = async () => {
     setIsLoading(true);
+// console.log(itinerary);
+
+    // console.log(inclusion);
+    // console.log(exclusion);
+    // console.log(highlight);
+    // return;
     try {
       // Create a new FormData instance for file uploads
       const formData = new FormData();
@@ -197,6 +203,9 @@ const CreateTour = () => {
       formData.append('fooding', fooding);
       formData.append('others', otherServices);
       formData.append('itneryTourDetails', JSON.stringify(itinerary));
+      formData.append('highlightsDetails' , JSON.stringify(highlight));
+      formData.append("inclusionDetails",JSON.stringify(inclusion));
+      formData.append("exclusionDetails",JSON.stringify(exclusion));
 
       // Append single image file (titleImage)
       if (titleImage) {
@@ -657,7 +666,7 @@ const CreateTour = () => {
                             onChange={(e) =>
                               handleInclusionChange(
                                 index,
-                                'exclusion',
+                                'inclusion',
                                 e.target.value,
                               )
                             }
@@ -734,7 +743,7 @@ const CreateTour = () => {
               <button
                 onClick={createTourHandler}
                 className="inline-flex items-center justify-center gap-2.5 bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
-                disabled={isLoading}
+                // disabled={isLoading}
               >
                 {!isLoading ? (
                   <span className="flex items-center gap-5">
