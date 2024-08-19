@@ -55,9 +55,26 @@ const TourDetail = () => {
         });
 
         const { data, itneryTourData } = response.data;
-        const { TourDatum } = data;
+        const { TourDatum, Exclusions, Highlights, Inclusions } = data;
 
-        console.log(data);
+        const ExclusionUpdated = Exclusions.map((item) => {
+          return {
+            sl: item.serialNo,
+            exclusion: item.exclusion,
+          };
+        });
+        const HighlightsUpdated = Highlights.map((item) => {
+          return {
+            sl: item.serialNo,
+            highlight: item.highlight,
+          };
+        });
+        const InclusionUpdated = Inclusions.map((item) => {
+          return {
+            sl: item.serialNo,
+            inclusion: item.inclusion,
+          };
+        });
         // Update state with the fetched data
         setTourTitle(data.tourTitle || '');
         setTourPrice(data.tourPrice || '');
@@ -76,7 +93,9 @@ const TourDetail = () => {
         setFooding(TourDatum.fooding || false);
         setOtherServices(TourDatum.others || '');
         // setTourLocation(data.tourLocation || '');
-
+        setHighlight(HighlightsUpdated);
+        setInclusion(InclusionUpdated);
+        setExclusion(ExclusionUpdated);
         setItinerary(itneryTourData);
       } catch (error) {
         console.error('Error occurred', error);
@@ -251,7 +270,9 @@ const TourDetail = () => {
           'Content-Type': 'multipart/form-data',
         },
       });
-      toast.success(`${tourTitle} Updated`);
+  
+    
+            toast.success(`${tourTitle} Updated`);
       resetForm();
       navigate('/tables');
       console.log('Tour updated successfully:', response.data);

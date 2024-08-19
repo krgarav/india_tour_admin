@@ -23,9 +23,12 @@ const Login: React.FC = () => {
             email: enteredEmail,
             password: enteredPassword,
           });
+          if(response.data){
+            localStorage.setItem("indiatourtoken",response.data.token)
+            navigate('/dashboard');
+          }
           setIsLoading(false);
-          console.log(response.data);
-          navigate('/dashboard');
+          
         } catch (error: any) {
           setIsLoading(false); // Assuming you have setLoading state variable
           if (error.response) {

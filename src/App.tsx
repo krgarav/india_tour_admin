@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Route, Routes, useLocation } from 'react-router-dom';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 
 import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
@@ -23,10 +23,29 @@ import AllTourPackages from './pages/AllTourPackages';
 import SeoPage from './pages/SeoPage';
 import PackageDetail from './pages/PackageDetailPage';
 
+const useTokenRedirect = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  useEffect(() => {
+    const token = localStorage.getItem('indiatourtoken');
+
+    if (token) {
+      // If the token is present and the user is not already on the dashboard, navigate to the dashboard
+      if (location.pathname === '/' || location.pathname === '/auth/login') {
+        navigate('/dashboard', { replace: true });
+      }
+    } else {
+      // If no token is present, navigate to the login or home page
+      if (location.pathname !== '/') {
+        navigate('/', { replace: true });
+      }
+    }
+  }, [location, navigate]);
+};
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
   const { pathname } = useLocation();
-
+  useTokenRedirect();
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
