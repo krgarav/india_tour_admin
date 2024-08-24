@@ -11,12 +11,7 @@ const AllTourPackages = () => {
   return (
     <DefaultLayout>
       <Breadcrumb pageName="Tables" />
-
       <div className="flex flex-col gap-10">
-        {/* <TableOne />
-      <TableTwo />
-      <TableThree /> */}
-        {/* <TableFour /> */}
         <TourPackageTable />
       </div>
     </DefaultLayout>

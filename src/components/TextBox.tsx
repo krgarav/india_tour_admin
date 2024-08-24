@@ -1,13 +1,12 @@
-// src/TextBox.js
 import React from 'react';
 
-const TextBox = ({ strings }) => {
+const TextBox: React.FC<TextBoxProps> = ({ strings }) => {
   return (
     <div className="flex flex-wrap items-center p-4">
       {strings.map((str, index) => (
         <div
           key={index}
-          className="inline-block w-32 h-12 m-1 p-2 text-black dark:text-white text-center leading-[14px] border border-gray-300 shadow-sm rounded-md "
+          className="flex items-center bg-gray-200 text-gray-800 text-sm font-medium mr-2 mb-2 px-3 py-1 rounded-full border  border-rose-100"
         >
           {str}
         </div>
@@ -15,5 +14,9 @@ const TextBox = ({ strings }) => {
     </div>
   );
 };
+
+interface TextBoxProps {
+  strings: string[];
+}
 
 export default TextBox;
