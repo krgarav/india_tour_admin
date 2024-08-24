@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import Chip from '../../common/Chip';
 
-const ChipArray = () => {
+const ChipArray = (props) => {
   const [chips, setChips] = useState([]);
   const [inputValue, setInputValue] = useState('');
-
+  props.onChange(chips);
   const handleDelete = (chipId) => {
     setChips(chips.filter((chip) => chip.id !== chipId));
   };

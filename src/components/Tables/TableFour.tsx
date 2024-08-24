@@ -5,6 +5,7 @@ const address = import.meta.env.VITE_API_ADDRESS;
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import TextBoxes from '../TextBox';
+import Placeholder from '../Placeholder';
 
 const TableFour = () => {
   const [tours, setTours] = useState([]);
@@ -165,40 +166,57 @@ const TableFour = () => {
       </tr>
     );
   });
+  const placeHolderJobs = new Array(10).fill(null).map((_, index) => (
+    <tr key={index} className="bg-gray-200 text-left dark:bg-meta-4">
+      <td className="w-1/4 py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+        <Placeholder width="60%" height="1.5em" />
+      </td>
+      <td className="w-1/2 py-4 px-4 font-medium text-black dark:text-white">
+        <Placeholder width="60%" height="1.5em" />
+      </td>
+      <td className="w-1/8 py-4 px-4 font-medium text-black dark:text-white">
+        <Placeholder width="60%" height="1.5em" />
+      </td>
+      <td className="w-1/8 py-4 px-4 font-medium text-black dark:text-white">
+        <Placeholder width="60%" height="1.5em" />
+      </td>
+    </tr>
+  ));
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <div className="max-w-full overflow-x-auto">
-        {loading ? (
-          <div className="w-full p-6 space-y-4 animate-pulse">
-            <div className="h-4 bg-gray-300 rounded"></div>
-            <div className="h-4 bg-gray-300 rounded"></div>
-            <div className="h-4 bg-gray-300 rounded"></div>
-          </div>
-        ) : AllTours.length === 0 ? (
-          <div className="w-full p-6 text-center text-gray-500">
-            No Tours Available
-          </div>
-        ) : (
-          <table className="w-full table-fixed">
-            <thead>
-              <tr className="bg-gray-200 text-left dark:bg-meta-4">
-                <th className="w-1/4 py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                  Tour Name
-                </th>
-                <th className="w-1/2 py-4 px-4 font-medium text-black dark:text-white">
-                  Tour Packages Involvement
-                </th>
-                <th className="w-1/8 py-4 px-4 font-medium text-black dark:text-white">
-                  Top Deals
-                </th>
-                <th className="w-1/8 py-4 px-4 font-medium text-black dark:text-white">
-                  Actions
-                </th>
+      
+        <table className="w-full table-fixed">
+          <thead>
+            <tr className="bg-gray-200 text-left dark:bg-meta-4">
+              <th className="w-1/4 py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                Tour Name
+              </th>
+              <th className="w-1/2 py-4 px-4 font-medium text-black dark:text-white">
+                Tour Packages Involvement
+              </th>
+              <th className="w-1/8 py-4 px-4 font-medium text-black dark:text-white">
+                Top Deals
+              </th>
+              <th className="w-1/8 py-4 px-4 font-medium text-black dark:text-white">
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {loading ? placeHolderJobs : AllTours}
+            {AllTours.length === 0 && !loading && (
+              <tr>
+                <td
+                  colSpan="100%"
+                  style={{ textAlign: 'center', width: '100%' }}
+                >
+                  No Tours present
+                </td>
               </tr>
-            </thead>
-            <tbody>{AllTours}</tbody>
-          </table>
-        )}
+            )}
+          </tbody>
+        </table>
       </div>
     </div>
   );

@@ -16,7 +16,7 @@ const SeoPage = () => {
   const [title, setTitle] = useState<String>('');
   const [backgroundImage, setBackgroundImage] = useState<String>('');
   const [selected, setSelected] = useState([]);
-
+  const [description, setDescription] = useState<String>('');
   useEffect(() => {
     const loadOption = async () => {
       try {
@@ -38,30 +38,27 @@ const SeoPage = () => {
     };
     loadOption();
   }, []);
-
+const handleChip=(index)=>{
+  console.log(index)
+}
   const handleChange = (selectedOptions) => {
     const selectedValues = selectedOptions.map((option) => option.value);
     setSelected(selectedValues);
   };
   const handleClick = async () => {
     toast.success('Added the Keyword');
-    console.log(selected);
-    // try {
-    //   // Create a new FormData instance for file uploads
-    //   const formData = new FormData();
+    // console.log(selected);
+    //     try {
 
-    //   // Append each field individually to FormData
-    //   formData.append('tourPackageTitle', title);
-    //   formData.append('toursIncluded', JSON.stringify(selected));
-
-    //   // Append single image file (titleImage)
-    //   if (backgroundImage) {
-    //     formData.append('TourBGImage', backgroundImage);
-    //   }
+    const obj ={
+      keyword:selected,
+      description:description
+    }
+    console.log(obj)
 
     //   // Make a POST request to your backend endpoint
     //   const response = await axios.post(
-    //     `${address}/createtourpackage`,
+    //     `${address}/addmetadata`,
     //     formData,
     //     {
     //       headers: {
@@ -70,10 +67,10 @@ const SeoPage = () => {
     //     },
     //   );
     //   console.log(response);
-    //   toast.success(`${title} Added`);
-    //   // resetForm();
+    //   // toast.success(`${title} Added`);
+
     //   console.log('Tour creation successful:', response.data);
-    //   // Handle any success logic here
+
     // } catch (error) {
     //   if (error?.response?.data.message) {
     //     toast.error(JSON.stringify(error?.response?.data.message));
@@ -107,7 +104,8 @@ const SeoPage = () => {
                   type="text"
                   placeholder="Enter the Description"
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  onChange={(e) => setTitle(e.target.value)}
+                  onChange={(e) => setDescription(e.target.value)}
+                  value={description}
                 />
               </div>
               <div>
@@ -115,7 +113,7 @@ const SeoPage = () => {
                   Keywords
                 </label>
                 <div className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary">
-                  <ChipArray />
+                  <ChipArray onChange={handleChip}/>
                 </div>
               </div>
 
