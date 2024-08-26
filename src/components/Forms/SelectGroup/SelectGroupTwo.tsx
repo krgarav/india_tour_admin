@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const SelectGroupTwo: React.FC = (props) => {
   const [selectedOption, setSelectedOption] = useState<string>('');
+  const [label, setLabel] = useState();
   const [isOptionSelected, setIsOptionSelected] = useState<boolean>(false);
 
+  useEffect(() => {
+    props.onchange(selectedOption, label);
+  }, [selectedOption]);
   const changeTextColor = () => {
     setIsOptionSelected(true);
   };
-
   return (
     <div>
       <label className="mb-3 block text-black dark:text-white">
@@ -49,6 +52,30 @@ const SelectGroupTwo: React.FC = (props) => {
         <select
           value={selectedOption}
           onChange={(e) => {
+            const selectedLabel = e.target.options[e.target.selectedIndex].text;
+            console.log(selectedLabel);
+            let label;
+
+            switch (true) {
+              case selectedLabel.includes('TOUR PAGE'):
+                label = 'tour';
+                break;
+
+              case selectedLabel.includes('PACKAGE PAGE'):
+                label = 'package';
+                break;
+
+              case selectedLabel.includes('Homepage'):
+                label = 'homepage';
+                break;
+              case selectedLabel.includes('Contact'):
+                label = 'contact';
+                break;
+
+              default:
+                label = 'default';
+            }
+            setLabel(label);
             setSelectedOption(e.target.value);
             changeTextColor();
           }}
@@ -59,20 +86,31 @@ const SelectGroupTwo: React.FC = (props) => {
           <option value="" disabled className="text-body dark:text-bodydark">
             Select Page
           </option>
-          <option value="USA" className="text-body dark:text-bodydark">
+          <option value="homepage" className="text-body dark:text-bodydark">
             Homepage
           </option>
-          <option value="USA" className="text-body dark:text-bodydark">
+          <option value="contact" className="text-body dark:text-bodydark">
             Contact Us
           </option>
-          {props.options.map((item, index) => {
+          {props.tourOptions.map((item, index) => {
             return (
               <option
                 value={item.value}
                 className="text-body dark:text-bodydark"
                 key={index}
               >
-                {item.label}
+                {item.label} - (TOUR PAGE)
+              </option>
+            );
+          })}
+          {props.packageOptions.map((item, index) => {
+            return (
+              <option
+                value={item.value}
+                className="text-body dark:text-bodydark"
+                key={index}
+              >
+                {item.label} - (PACKAGE PAGE)
               </option>
             );
           })}

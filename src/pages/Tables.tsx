@@ -9,7 +9,6 @@ const Tables = () => {
   return (
     <DefaultLayout>
       <Breadcrumb pageName="Tables" />
-
       <div className="flex flex-col gap-10">
         <TableFour />
       </div>

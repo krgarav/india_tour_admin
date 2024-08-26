@@ -1,10 +1,26 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Chip from '../../common/Chip';
-
+import PropTypes from 'prop-types';
 const ChipArray = (props) => {
   const [chips, setChips] = useState([]);
   const [inputValue, setInputValue] = useState('');
-  props.onChange(chips);
+
+    useEffect(() => {
+    if (chips !== props.chips) {
+      props.onChange(chips);
+    }
+  }, [chips]);
+  useEffect(() => {
+    if (Array.isArray(props.chips) && props.chips.length > 0) {
+      const allChips = props.chips.map((item) => ({
+        id: item.id,
+        label: item.keyword,
+      }));
+      setChips(allChips);
+    } else {
+      setChips([]);
+    }
+  }, [props.chips]);
   const handleDelete = (chipId) => {
     setChips(chips.filter((chip) => chip.id !== chipId));
   };
@@ -41,6 +57,19 @@ const ChipArray = (props) => {
       />
     </div>
   );
+};
+ChipArray.propTypes = {
+  onChange: PropTypes.func.isRequired,
+  chips: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      keyword: PropTypes.string.isRequired,
+    }),
+  ),
+};
+
+ChipArray.defaultProps = {
+  chips: [],
 };
 
 export default ChipArray;

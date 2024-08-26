@@ -22,6 +22,7 @@ import TourDetail from './pages/TourDetail';
 import AllTourPackages from './pages/AllTourPackages';
 import SeoPage from './pages/SeoPage';
 import PackageDetail from './pages/PackageDetailPage';
+import EditSeo from './pages/EditSeo';
 
 const useTokenRedirect = () => {
   const navigate = useNavigate();
@@ -216,12 +217,20 @@ function App() {
           path="/manage-seo"
           element={
             <>
-              <PageTitle title="SEO Mangement | Triangle India Tour" />
+              <PageTitle title="Add SEO Mangement | Triangle India Tour" />
               <SeoPage />
             </>
           }
         />
-
+        <Route
+          path="/edit-seo"
+          element={
+            <>
+              <PageTitle title="Edit SEO Mangement | Triangle India Tour" />
+              <EditSeo />
+            </>
+          }
+        />
         <Route
           path="/tour-package/:id"
           element={

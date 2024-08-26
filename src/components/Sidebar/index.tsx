@@ -386,31 +386,97 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   Tour Packages
                 </NavLink>
               </li>
-              {/* <!-- Menu Item Calendar --> */}
-              <li>
-                <NavLink
-                  to="/manage-seo"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
-                    pathname.includes('calendar') &&
-                    'bg-graydark dark:bg-meta-4'
-                  }`}
-                >
-                  <svg
-                    className="fill-current"
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M10 2a8 8 0 105.29 14.71l5 5a1 1 0 001.42-1.42l-5-5A8 8 0 0010 2zm0 2a6 6 0 110 12A6 6 0 0110 4zM4.67 10.5h2.46a3.34 3.34 0 011.24 2.29l.06.44h.36a.75.75 0 000-1.5H8.5a2 2 0 01-1.73-1H4.67a.75.75 0 000 1.5zm12.07-1.27a1.09 1.09 0 011.51-.44l.44.26a1 1 0 01-.89 1.77l-.44-.26a1.09 1.09 0 01-.44-1.51zM10 6.5a.75.75 0 00-.75.75v2.16a.75.75 0 001.5 0V7.25A.75.75 0 0010 6.5zm6.37 2.13a1 1 0 01.26-.44l.26-.44a1.09 1.09 0 011.51-.44 1.09 1.09 0 01-.44 1.51l-.44.26a1 1 0 01-1.77-.89l.26-.44zm-9.74 5.24a1 1 0 01-.44-.26 1.09 1.09 0 01-.44-1.51 1.09 1.09 0 011.51.44l.26.44a1 1 0 01-.89 1.77l-.44-.26zm8.32 1.24a1 1 0 01-.26-.44 1.09 1.09 0 01.44-1.51 1.09 1.09 0 011.51.44l.26.44a1 1 0 01-1.77.89l-.44-.26z"
-                      // fill="#000000"
-                    />
-                  </svg>
-                  Manage SEO
-                </NavLink>
-              </li>
+
+              <SidebarLinkGroup
+                activeCondition={
+                  pathname === '/manage-seo' ||
+                  pathname.includes('seo')
+                }
+              >
+                {(handleClick, open) => {
+                  return (
+                    <React.Fragment>
+                      <NavLink
+                        to="#"
+                        className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                          (pathname === '/manage-seo' ||
+                            pathname.includes('seo')) &&
+                          'bg-graydark dark:bg-meta-4'
+                        }`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          sidebarExpanded
+                            ? handleClick()
+                            : setSidebarExpanded(true);
+                        }}
+                      >
+                        <svg
+                          className="fill-current"
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M10 2a8 8 0 105.29 14.71l5 5a1 1 0 001.42-1.42l-5-5A8 8 0 0010 2zm0 2a6 6 0 110 12A6 6 0 0110 4zM4.67 10.5h2.46a3.34 3.34 0 011.24 2.29l.06.44h.36a.75.75 0 000-1.5H8.5a2 2 0 01-1.73-1H4.67a.75.75 0 000 1.5zm12.07-1.27a1.09 1.09 0 011.51-.44l.44.26a1 1 0 01-.89 1.77l-.44-.26a1.09 1.09 0 01-.44-1.51zM10 6.5a.75.75 0 00-.75.75v2.16a.75.75 0 001.5 0V7.25A.75.75 0 0010 6.5zm6.37 2.13a1 1 0 01.26-.44l.26-.44a1.09 1.09 0 011.51-.44 1.09 1.09 0 01-.44 1.51l-.44.26a1 1 0 01-1.77-.89l.26-.44zm-9.74 5.24a1 1 0 01-.44-.26 1.09 1.09 0 01-.44-1.51 1.09 1.09 0 011.51.44l.26.44a1 1 0 01-.89 1.77l-.44-.26zm8.32 1.24a1 1 0 01-.26-.44 1.09 1.09 0 01.44-1.51 1.09 1.09 0 011.51.44l.26.44a1 1 0 01-1.77.89l-.44-.26z"
+                          />
+                        </svg>
+                        Manage SEO
+                        <svg
+                          className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
+                            open && 'rotate-180'
+                          }`}
+                          width="20"
+                          height="20"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            clipRule="evenodd"
+                            d="M4.41107 6.9107C4.73651 6.58527 5.26414 6.58527 5.58958 6.9107L10.0003 11.3214L14.4111 6.91071C14.7365 6.58527 15.2641 6.58527 15.5896 6.91071C15.915 7.23614 15.915 7.76378 15.5896 8.08922L10.5896 13.0892C10.2641 13.4147 9.73651 13.4147 9.41107 13.0892L4.41107 8.08922C4.08563 7.76378 4.08563 7.23614 4.41107 6.9107Z"
+                            fill=""
+                          />
+                        </svg>
+                      </NavLink>
+                      {/* <!-- Dropdown Menu Start --> */}
+                      <div
+                        className={`translate transform overflow-hidden ${
+                          !open && 'hidden'
+                        }`}
+                      >
+                        <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
+                          <li>
+                            <NavLink
+                              to="/manage-seo"
+                              className={({ isActive }) =>
+                                'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
+                                (isActive && '!text-white')
+                              }
+                            >
+                              Add SEO
+                            </NavLink>
+                          </li>
+                          <li>
+                            <NavLink
+                              to="/edit-seo"
+                              className={({ isActive }) =>
+                                'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
+                                (isActive && '!text-white')
+                              }
+                            >
+                              Edit SEO
+                            </NavLink>
+                          </li>
+                        </ul>
+                      </div>
+                      {/* <!-- Dropdown Menu End --> */}
+                    </React.Fragment>
+                  );
+                }}
+              </SidebarLinkGroup>
 
               {/* <!-- Menu Item Profile --> */}
               <li>

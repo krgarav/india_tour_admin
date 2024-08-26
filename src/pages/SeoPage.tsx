@@ -1,22 +1,22 @@
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
-
 import DefaultLayout from '../layout/DefaultLayout';
-
 import SelectGroupTwo from '../components/Forms/SelectGroup/SelectGroupTwo';
-// import MultiSelect from '../components/Forms/MultiSelect';
-import SelectState from '../components/Forms/SelectGroup/SelectState';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { MultiSelect } from 'react-multi-select-component';
+
 import ChipArray from '../components/ChipArray/ChipArray';
+import Spinner from '../common/spinner/spinner';
 const address = import.meta.env.VITE_API_ADDRESS;
 const SeoPage = () => {
   const [options, setOptions] = useState<File[]>([]);
+  const [packageOptions, setPackageOptions] = useState<File[]>([]);
   const [title, setTitle] = useState<String>('');
-  const [backgroundImage, setBackgroundImage] = useState<String>('');
-  const [selected, setSelected] = useState([]);
+  const [label, setLabel] = useState();
+  const [loading, setLoading] = useState(false);
+  const [keywords, setKeywords] = useState([]);
   const [description, setDescription] = useState<String>('');
+
   useEffect(() => {
     const loadOption = async () => {
       try {
@@ -25,12 +25,24 @@ const SeoPage = () => {
             'Content-Type': 'multipart/form-data',
           },
         });
-        // console.log(response);
-
+        const response2 = await axios.get(`${address}/get/tourpackages`, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        const structuredOptions = response2.data.allPackageTours.map(
+          (item: Object) => ({
+            value: item.id,
+            label: item.packageTitle,
+          }),
+        );
+        console.log(response2.data.allPackageTours);
+        // const packages = response2
         const options = response.data.data.map((item: Object) => ({
           value: item.id,
           label: item.tourTitle,
         }));
+        setPackageOptions(structuredOptions);
         setOptions(options);
       } catch (error) {
         console.error('Error loading options:', error);
@@ -38,51 +50,57 @@ const SeoPage = () => {
     };
     loadOption();
   }, []);
-const handleChip=(index)=>{
-  console.log(index)
-}
-  const handleChange = (selectedOptions) => {
-    const selectedValues = selectedOptions.map((option) => option.value);
-    setSelected(selectedValues);
-  };
-  const handleClick = async () => {
-    toast.success('Added the Keyword');
-    // console.log(selected);
-    //     try {
 
-    const obj ={
-      keyword:selected,
-      description:description
+  const handleChip = useCallback((items: any) => {
+    const structuredKeywords = items.map((item: any) => item.label);
+    setKeywords(structuredKeywords);
+  }, []);
+  const optionHandler = useCallback((selectedOption, selectedlabel) => {
+    setLabel(selectedlabel);
+    if (selectedOption === 'homepage') {
+      setTitle('1');
+      return;
+    } else if (selectedOption === 'contact') {
+      setTitle('2');
+      return;
     }
-    console.log(obj)
+    console.log(selectedOption);
+    setTitle(selectedOption);
+  }, []);
+  const handleClick = async () => {
+    try {
+      setLoading(true);
+      const obj = {
+        pageId: +title,
+        keyword: keywords,
+        description: description,
+        label: label,
+      };
+      console.log(obj);
 
-    //   // Make a POST request to your backend endpoint
-    //   const response = await axios.post(
-    //     `${address}/addmetadata`,
-    //     formData,
-    //     {
-    //       headers: {
-    //         'Content-Type': 'multipart/form-data',
-    //       },
-    //     },
-    //   );
-    //   console.log(response);
-    //   // toast.success(`${title} Added`);
-
-    //   console.log('Tour creation successful:', response.data);
-
-    // } catch (error) {
-    //   if (error?.response?.data.message) {
-    //     toast.error(JSON.stringify(error?.response?.data.message));
-    //   }
-    //   console.error('Error creating tour:', error);
-    //   // Handle errors appropriately
-    // }
+      const response = await axios.post(`${address}/addmetadata`, obj, {
+        headers: {
+          'Content-Type': 'application/json', // Set the Content-Type to application/json
+        },
+      });
+      console.log(response);
+      setLoading(false);
+      toast.success(`Keywords Added`);
+    } catch (error) {
+      setLoading(false);
+      if (error?.response?.data.message) {
+        toast.error(error?.response?.data.message);
+        return;
+      }
+      if (error?.message) {
+        toast.error(error?.message);
+      }
+      console.error('Error creating tour:', error);
+    }
   };
   return (
     <DefaultLayout>
       <Breadcrumb pageName="Manage SEO" />
-
       <div className="grid grid-cols-1 ">
         <div className="flex flex-col gap-9">
           {/* <!-- Create Input Fields --> */}
@@ -94,7 +112,11 @@ const handleChip=(index)=>{
             </div>
             <div className="flex flex-col gap-5.5 p-6.5">
               <div>
-                <SelectGroupTwo options={options} />
+                <SelectGroupTwo
+                  onchange={optionHandler}
+                  tourOptions={options}
+                  packageOptions={packageOptions}
+                />
               </div>
               <div>
                 <label className="mb-3 block text-black dark:text-white">
@@ -105,7 +127,6 @@ const handleChip=(index)=>{
                   placeholder="Enter the Description"
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                   onChange={(e) => setDescription(e.target.value)}
-                  value={description}
                 />
               </div>
               <div>
@@ -113,17 +134,17 @@ const handleChip=(index)=>{
                   Keywords
                 </label>
                 <div className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary">
-                  <ChipArray onChange={handleChip}/>
+                  <ChipArray onChange={handleChip} />
                 </div>
               </div>
 
               <button
-                // to="#"
                 className="inline-flex items-center justify-center gap-2.5 bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
                 onClick={handleClick}
+                disabled={loading}
               >
-                <span></span>
-                SET SEO
+                {loading && <Spinner />}
+                {!loading && 'SET SEO'}
               </button>
             </div>
           </div>
